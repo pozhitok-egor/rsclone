@@ -1,7 +1,10 @@
 import '../scss/style.scss';
 
-import Login from './authorization'
+// import Login from './authorization'
+import Account from './account'
 
-const login = new Login(document.querySelector(".action"));
+// const login = new Login(document.querySelector(".action"));
+// login.registration();
 
-login.autorization();
+const account = new Account(document.querySelector(".action"));
+account.generateTitle();

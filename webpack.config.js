@@ -156,7 +156,9 @@ const config = {
     }),
     new CopyWebpackPlugin([
       // {from: './src/static', to: './'},
-      // {from: './src/img', to: './img/'},
+      {from: './src/icon/cash.svg', to: './icon/cash.svg'},
+      {from: './src/icon/web.svg', to: './icon/web.svg'},
+      {from: './src/icon/card.svg', to: './icon/card.svg'},
     ]),
   ],
 
