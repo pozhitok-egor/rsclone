@@ -17,6 +17,7 @@ class Operation {
     }
 
     generateTitle() {
+        this.dataOperation = [];
         axios.get(`https://croesus-backend.herokuapp.com/transactions/all`, {
             headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
         })
@@ -129,69 +130,70 @@ class Operation {
                     })
                     dayBlock.append(blockTitle, operationBlock);
 
-                    const buttonContainer = document.createElement('div');
-                    buttonContainer.classList.add('action__add-list');
-                    const addOperation = document.createElement('button');
-                    addOperation.classList.add('action__add-operation');
-                    const addImg = document.createElement('img');
-                    addImg.src = './icon/plus.svg';
-                    addImg.alt = '';
+                    block.append(dayBlock);
+                })
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('action__add-list');
+                const addOperation = document.createElement('button');
+                addOperation.classList.add('action__add-operation');
+                const addImg = document.createElement('img');
+                addImg.src = './icon/plus.svg';
+                addImg.alt = '';
 
-                    const minusOperation = document.createElement('button');
-                    minusOperation.classList.add('action__add-operation');
-                    const minusImg = document.createElement('img');
-                    minusImg.src = './icon/minus.svg';
-                    minusImg.alt = '';
+                const minusOperation = document.createElement('button');
+                minusOperation.classList.add('action__add-operation');
+                const minusImg = document.createElement('img');
+                minusImg.src = './icon/minus.svg';
+                minusImg.alt = '';
 
-                    addOperation.append(addImg);
-                    minusOperation.append(minusImg);
-                    buttonContainer.append(addOperation);
+                addOperation.append(addImg);
+                minusOperation.append(minusImg);
+                buttonContainer.append(addOperation);
 
-                    const options = (buttonBlock, buttonAdd, buttonMinus, type) => {
-                        const blocks = buttonBlock;
-                        const adds = buttonAdd;
-                        const minus = buttonMinus;
+                const options = (buttonBlock, buttonAdd, buttonMinus, type) => {
+                    const blocks = buttonBlock;
+                    const adds = buttonAdd;
+                    const minus = buttonMinus;
 
-                        if (type === 'list') {
-                            blocks.append(buttonMinus);
-                            adds.onclick = () => {
-                                this.createOperation('');
-                            }
-                            minus.onclick = () => {
-                                this.createOperation('minus');
-                            }
-                        } else if (type === 'del') {
-                            blocks.childNodes[1].remove();
-                            adds.onclick = () => {
-                                options(blocks, buttonAdd, buttonMinus, 'list');
-                                setTimeout(() => {
-                                    const listener = (e) => {
-                                        console.log(e.target.classList);
-                                        if (e.target.classList[0] !== 'action__add-operation') {
-                                            window.removeEventListener('click', listener);
-                                            options(blocks, adds, minus, 'del');
-                                        }
+                    if (type === 'list') {
+                        blocks.append(buttonMinus);
+                        adds.onclick = () => {
+                            this.createOperation('');
+                        }
+                        minus.onclick = () => {
+                            this.createOperation('minus');
+                        }
+                    } else if (type === 'del') {
+                        blocks.childNodes[1].remove();
+                        adds.onclick = () => {
+                            options(blocks, buttonAdd, buttonMinus, 'list');
+                            setTimeout(() => {
+                                const listener = (e) => {
+                                    console.log(e.target.classList);
+                                    if (e.target.classList[0] !== 'action__add-operation') {
+                                        window.removeEventListener('click', listener);
+                                        options(blocks, adds, minus, 'del');
                                     }
-                                    window.addEventListener('click', listener);
-                                })
-                            }
+                                }
+                                window.addEventListener('click', listener);
+                            })
                         }
                     }
+                }
 
-                    addOperation.onclick = () => {
-                        options(buttonContainer, addOperation, minusOperation, 'list');
-                        setTimeout(() => {
-                            const listener = (e) => {
-                                if (e.target.classList[0] !== 'action__add-operation') {
-                                    window.removeEventListener('click', listener);
-                                    options(buttonContainer, addOperation, minusOperation, 'del');
-                                }
+                addOperation.onclick = () => {
+                    options(buttonContainer, addOperation, minusOperation, 'list');
+                    setTimeout(() => {
+                        const listener = (e) => {
+                            if (e.target.classList[0] !== 'action__add-operation') {
+                                window.removeEventListener('click', listener);
+                                options(buttonContainer, addOperation, minusOperation, 'del');
                             }
-                            window.addEventListener('click', listener);
-                        })
-                    }
-                    block.append(dayBlock, buttonContainer);
-                })
+                        }
+                        window.addEventListener('click', listener);
+                    })
+                }
+                block.append(buttonContainer);
             })
             .catch(function (error) {
                 console.log(error);
