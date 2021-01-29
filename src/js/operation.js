@@ -394,6 +394,7 @@ class Operation {
                 block.append(div, operationBlock);
 
                 save.onclick = () => {
+                    const checkList = [['Mo', '1'], ['Tu', '2'], ['We', '3'], ['Th', '4'], ['Fr', '5'], ['Sa', '6'], ['Su', '0']];
 
                     let suma;
                     let types;
@@ -420,7 +421,12 @@ class Operation {
                     })
                     repeatDays.childNodes.forEach(value => {
                         if (value.classList.contains('chosen') === true) {
-                            days = value.textContent;
+                            checkList.forEach(values => {
+                                if (values[0] === value.textContent){
+                                    days = values;
+                                }
+                            })
+
                         }
                     })
                     if (suma === '' || types === '' || delays === '' || days === '') {
@@ -431,7 +437,7 @@ class Operation {
                                 type:  types,
                                 repeat: flag.checked,
                                 delay: delays,
-                                day: days,
+                                day: +days[1],
                                 sum: +suma,
                                 income: this.operationType
                             },
