@@ -51,7 +51,7 @@ class Login {
         const form = document.createElement('form');
         form.classList.add('action__form');
         const login = document.createElement('div');
-        login.classList.add('action__title');
+        login.classList.add('action__autorization-title');
         login.textContent = 'Login';
 
         const userNameLogin = document.createElement('div');
@@ -67,6 +67,10 @@ class Login {
 
         const loginPass = document.createElement('input');
         loginPass.classList.add('action__input');
+
+        const dataBlock = document.createElement('div');
+        dataBlock.classList.add('action__autorization-data');
+        dataBlock.append(userNameLogin, loginInput, passwordLogin, loginPass);
 
 
         const loginButton = document.createElement('button');
@@ -104,7 +108,7 @@ class Login {
         loginItem.classList.add('action__login');
 
 
-        loginItem.append(login, userNameLogin, loginInput, passwordLogin, loginPass, loginButton);
+        loginItem.append(login, dataBlock, loginButton);
         form.append(loginItem);
         block.append(form);
     }
@@ -148,7 +152,7 @@ class Login {
         form.classList.add('action__form');
 
         const register = document.createElement('div');
-        register.classList.add('action__title');
+        register.classList.add('action__autorization-title');
         register.textContent = 'Register';
 
         const userNameAutor = document.createElement('div');
@@ -256,7 +260,6 @@ class Login {
                 this.lenguageSend.forEach(value => {
                     if (languageSelect.textContent === value[0]) {
                         lang = value;
-                        console.log(lang[1]);
                     }
                 })
                 axios.post(`https://croesus-backend.herokuapp.com/users/register`, {

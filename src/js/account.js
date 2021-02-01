@@ -44,8 +44,9 @@ class Account {
         this.accountList = [];
     }
 
-    addAccount(block) {
+    addAccount(block, id) {
         for (let x = 0; x < this.accountList.length; x += 1) {
+            const accId = Object.values(id[x]);
             const account = this.accountList[x];
 
             const accountName = document.createElement('div');
@@ -73,11 +74,15 @@ class Account {
             sumTitle.append(sum, sumType);
 
             accountName.append(nameTitle, sumTitle);
+            accountName.onclick = () => {
+                this.createAccount(true, accId[0]);
+                console.log(accId[0])
+            }
             block.append(accountName);
         }
     }
 
-    createAccount() {
+    createAccount(typeOperation = false, idAcc = '') {
         function createList(typeSelect, block, name, icon = false) {
             const types = typeSelect;
             const select = block;
@@ -222,6 +227,35 @@ class Account {
         questionBlock.append(question, flag);
 
         form.append(titleBlock, typeBlock, currencyBlock, currencyBalanceBlock, questionBlock);
+
+        block.append(div, form);
+
+        if (typeOperation) {
+            const deletes = document.createElement('button');
+            deletes.classList.add('action__delete');
+            const delImg = document.createElement('img');
+            delImg.src = './icon/delete.svg';
+            delImg.alt = '';
+            deletes.append(delImg);
+
+            deletes.onclick = () => {
+                console.log('delete')
+                axios.delete(`https://croesus-backend.herokuapp.com/accounts/${idAcc}`,
+                    {
+                        headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
+                    })
+                    .then((response) => {
+                        console.log(response)
+                        this.generateTitle();
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            }
+
+            block.append(deletes);
+        }
+
         save.onclick = () => {
             if (titleInput.value.trim() === '') {
                 alert('ПИШИ НАЗВАНИЕ!');
@@ -230,26 +264,46 @@ class Account {
                     currencyBalanceInput.value = '0';
                 }
                 this.accountList.push([titleInput.value, currencyBalanceInput.value, currencySelect.textContent, typeInput.textContent.toLowerCase()]);
-                axios.post(`https://croesus-backend.herokuapp.com/accounts/`, {
-                        name: `${titleInput.value}`,
-                        sum: +currencyBalanceInput.value,
-                        currency: `${currencySelect.textContent}`,
-                        icon: `${typeInput.textContent.toLowerCase()}`,
-                        inCount: flag.checked
-                    },
-                    {
-                        headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
-                    })
-                    .then(() => {
-                        this.generateTitle();
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    })
-                // , flag.checked
+
+                if (typeOperation) {
+                    axios.put(`https://croesus-backend.herokuapp.com/accounts/${idAcc}`, {
+                            name: `${titleInput.value}`,
+                            sum: +currencyBalanceInput.value,
+                            currency: `${currencySelect.textContent}`,
+                            icon: `${typeInput.textContent.toLowerCase()}`,
+                            inCount: flag.checked
+                        },
+                        {
+                            headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
+                        })
+                        .then((response) => {
+                            console.log(response)
+                            this.generateTitle();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                } else {
+                    axios.post(`https://croesus-backend.herokuapp.com/accounts/`, {
+                            name: `${titleInput.value}`,
+                            sum: +currencyBalanceInput.value,
+                            currency: `${currencySelect.textContent}`,
+                            icon: `${typeInput.textContent.toLowerCase()}`,
+                            inCount: flag.checked
+                        },
+                        {
+                            headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
+                        })
+                        .then(() => {
+                            this.generateTitle();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                }
+
             }
         }
-        block.append(div, form);
     }
 
     generateTitle() {
@@ -258,7 +312,6 @@ class Account {
             headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
         })
             .then((responses) => {
-                console.log(responses)
                 Object.keys(responses.data.accounts).forEach(value => {
                     const massData = [];
                     Object.keys(responses.data.accounts[value]).forEach((data, index) => {
@@ -268,7 +321,6 @@ class Account {
                     });
                     this.accountList.push(massData);
                 })
-                console.log(this.accountList)
                 // this.generateTitle(this.appBlock);
 
                 const block = this.appBlock;
@@ -301,7 +353,7 @@ class Account {
 
                         const acountList = document.createElement('div');
                         acountList.classList.add('action__account-list')
-                        this.addAccount(acountList);
+                        this.addAccount(acountList, responses.data.accounts);
 
                         account.append(accountTitle, accountAdd);
                         block.append(header, account, acountList);

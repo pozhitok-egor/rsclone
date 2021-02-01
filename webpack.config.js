@@ -177,7 +177,12 @@ const config = {
       {from: './src/icon/operations.svg', to: './icon/operations.svg'},
       {from: './src/icon/search.svg', to: './icon/search.svg'},
       {from: './src/icon/plus.svg', to: './icon/plus.svg'},
-      {from: './src/icon/minus.svg', to: './icon/minus.svg'}
+      {from: './src/icon/minus.svg', to: './icon/minus.svg'},
+      {from: './src/icon/delete.svg', to: './icon/delete.svg'},
+      {from: './src/icon/analytics-chosen.svg', to: './icon/analytics-chosen.svg'},
+      {from: './src/icon/operations-chosen.svg', to: './icon/operations-chosen.svg'},
+      {from: './src/icon/accounts.svg', to: './icon/accounts.svg'},
+      {from: './src/icon/options-chosen.svg', to: './icon/options-chosen.svg'}
     ]),
   ],
 

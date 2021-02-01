@@ -9,8 +9,8 @@ class Operation {
         this.operationType = '';
         this.totalSum = 0;
         this.valueType = 'USD';
-        this.addCategory = [['cafe', './icon/food.svg'], ['health', './icon/health.svg'], ['food', './icon/foods.svg'], ['family', './icon/family.svg'], ['rest', './icon/rest.svg'], ['study', './icon/study.svg'], ['gifts', './icon/gifts.svg'], ['shopping', './icon/shopping.svg'], ['home', './icon/home.svg'], ['car', './icon/car.svg'], ['care', './icon/care.svg'], ['other', './icon/other.svg']];
-        this.minusCategory = [['salary', './icon/cash.svg'], ['other', './icon/other.svg']];
+        this.minusCategory = [['cafe', './icon/food.svg'], ['health', './icon/health.svg'], ['food', './icon/foods.svg'], ['family', './icon/family.svg'], ['rest', './icon/rest.svg'], ['study', './icon/study.svg'], ['gifts', './icon/gifts.svg'], ['shopping', './icon/shopping.svg'], ['home', './icon/home.svg'], ['car', './icon/car.svg'], ['care', './icon/care.svg'], ['other', './icon/other.svg']];
+        this.addCategory = [['salary', './icon/cash.svg'], ['other', './icon/other.svg']];
         this.allCategory = [['cafe', './icon/foods.svg'], ['health', './icon/health.svg'], ['food', './icon/food.svg'], ['family', './icon/family.svg'], ['rest', './icon/rest.svg'], ['study', './icon/study.svg'], ['gifts', './icon/gifts.svg'], ['shopping', './icon/shopping.svg'], ['home', './icon/home.svg'], ['car', './icon/car.svg'], ['care', './icon/care.svg'], ['salary', './icon/cash.svg'], ['other', './icon/other.svg']]
         this.daysWeek = [['Day', 'Week', 'Month', 'Year'], ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']];
         this.dataOperation = [];
@@ -26,185 +26,195 @@ class Operation {
                     const massData = [];
                     Object.keys(responses.data.transactions[value]).forEach((data, index) => {
                         if (index === 0) {
-                            massData.push(responses.data.transactions[value].accountId, responses.data.transactions[value].type, responses.data.transactions[value].sum, responses.data.transactions[value].createdAt, responses.data.transactions[value].income);
+                            massData.push(responses.data.transactions[value].accountId, responses.data.transactions[value].type, responses.data.transactions[value].sum, responses.data.transactions[value].createdAt, responses.data.transactions[value].income, responses.data.transactions[value][data]);
                         }
                     });
                     this.dataOperation.push(massData);
                 })
 
-        const mounth = ["January", "February", "March", "April", "May", "June", "July", "August", "Septeber", "October", "November", "December"];
-        // addOperation
-        const block = this.appBlock;
-        block.textContent = '';
+                const mounth = ["January", "February", "March", "April", "May", "June", "July", "August", "Septeber", "October", "November", "December"];
+                // addOperation
+                const block = this.appBlock;
+                block.textContent = '';
 
-        const sort = [];
+                const sort = [];
 
-        for (let x = 0; x < this.dataOperation.length; x += 1) {
-            console.log(this.dataOperation[x])
-            const mass = []
-            for (let z = x; z < this.dataOperation.length; z += 1) {
-                if (this.dataOperation[x][3].split('T')[0] === this.dataOperation[z][3].split('T')[0]) {
-                    mass.push(this.dataOperation[z]);
+                for (let x = 0; x < this.dataOperation.length; x += 1) {
+                    const mass = []
+                    for (let z = x; z < this.dataOperation.length; z += 1) {
+                        if (this.dataOperation[x][3].split('T')[0] === this.dataOperation[z][3].split('T')[0]) {
+                            mass.push(this.dataOperation[z]);
+                        }
+                    }
+                    sort.push(mass);
+                    x = sort.flat(1).length;
                 }
-            }
-            sort.push(mass);
-            x += sort.flat(1).length - 1;
-        }
 
-        console.log(sort)
 
-        axios.get(`https://croesus-backend.herokuapp.com/users`, {
-            headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
-        })
-            .then((response) => {
-                console.log(response);
-                this.valueType = response.data.user.settings.currency;
-                this.totalSum = response.data.user.settings.totalSum;
-
-                const header = document.createElement('div');
-                header.classList.add('action__header');
-                const sum = document.createElement('div');
-                sum.classList.add('action__total');
-                sum.textContent = `${this.totalSum} ${this.valueType}`;
-                const imgSearch = document.createElement('img');
-                imgSearch.src = './icon/search.svg';
-                imgSearch.alt = '';
-                header.append(sum, imgSearch);
-                block.append(header);
-
-                sort.forEach(value => {
-                    const dayBlock = document.createElement('div');
-                    dayBlock.classList.add('action__day-block');
-                    const blockTitle = document.createElement('div');
-                    blockTitle.classList.add('action__date');
-                    const date = value[0][3].split('T')[0].split("-").reverse().join(" ").split(' ');
-
-                    blockTitle.textContent = `${date[0]} ${mounth[date[1] - 1]} ${date[2]}`;
-                    const operationBlock = document.createElement('div');
-                    operationBlock.classList.add('action__operation-list');
-                    value.forEach((item) => {
-                        const typeItem = item[1];
-                        const sumItem = item[2];
-                        const incomeItem = item[4];
-
-                        axios.get(`https://croesus-backend.herokuapp.com/accounts/${item[0]}`, {
-                            headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
-                        })
-                            .then((responsess) => {
-                                console.log(responsess)
-                                const div = document.createElement('div');
-                                div.classList.add('action__operation-item');
-                                const typeSection = document.createElement('div');
-                                typeSection.classList.add('action__type-section');
-                                const valuesSection = document.createElement('div');
-                                if (incomeItem) {
-                                    valuesSection.classList.add('action__refill');
-                                    valuesSection.textContent = `+${sumItem}${responsess.data.account.currency}`
-                                } else {
-                                    valuesSection.classList.add('action__cash-out');
-                                    valuesSection.textContent = `-${sumItem}${responsess.data.account.currency}`
-                                }
-                                const img = document.createElement('img');
-                                for (let z = 0; z < this.allCategory.length; z += 1) {
-                                    if (item[1].toUpperCase() === this.allCategory[z][0].toUpperCase()) {
-                                        img.src = `${this.allCategory[z][1]}`;
-                                    }
-                                }
-                                img.alt = '';
-                                const nameDiv = document.createElement('div');
-                                // nameDiv.classList.add('action__')
-                                const type = document.createElement('div');
-                                type.textContent = typeItem[0].toUpperCase() + typeItem.slice(1);
-                                const name = document.createElement('div');
-                                name.textContent = responsess.data.account.name[0].toUpperCase() + responsess.data.account.name.slice(1);
-                                name.classList.add('action__name');
-                                nameDiv.append(type, name);
-                                typeSection.append(img, nameDiv);
-
-                                div.append(typeSection, valuesSection);
-                                operationBlock.append(div);
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            })
-                    })
-                    dayBlock.append(blockTitle, operationBlock);
-
-                    block.append(dayBlock);
+                axios.get(`https://croesus-backend.herokuapp.com/users`, {
+                    headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
                 })
-                const buttonContainer = document.createElement('div');
-                buttonContainer.classList.add('action__add-list');
-                const addOperation = document.createElement('button');
-                addOperation.classList.add('action__add-operation');
-                const addImg = document.createElement('img');
-                addImg.src = './icon/plus.svg';
-                addImg.alt = '';
+                    .then((response) => {
+                        this.valueType = response.data.user.settings.currency;
+                        this.totalSum = response.data.user.settings.totalSum;
 
-                const minusOperation = document.createElement('button');
-                minusOperation.classList.add('action__add-operation');
-                const minusImg = document.createElement('img');
-                minusImg.src = './icon/minus.svg';
-                minusImg.alt = '';
+                        const header = document.createElement('div');
+                        header.classList.add('action__header');
+                        const sum = document.createElement('div');
+                        sum.classList.add('action__total');
+                        sum.textContent = `${this.totalSum} ${this.valueType}`;
+                        const imgSearch = document.createElement('img');
+                        imgSearch.src = './icon/search.svg';
+                        imgSearch.alt = '';
+                        header.append(sum, imgSearch);
+                        block.append(header);
 
-                addOperation.append(addImg);
-                minusOperation.append(minusImg);
-                buttonContainer.append(addOperation);
+                        sort.forEach(value => {
+                            const dayBlock = document.createElement('div');
+                            dayBlock.classList.add('action__day-block');
+                            const blockTitle = document.createElement('div');
+                            blockTitle.classList.add('action__date');
+                            const date = value[0][3].split('T')[0].split("-").reverse().join(" ").split(' ');
 
-                const options = (buttonBlock, buttonAdd, buttonMinus, type) => {
-                    const blocks = buttonBlock;
-                    const adds = buttonAdd;
-                    const minus = buttonMinus;
+                            blockTitle.textContent = `${date[0]} ${mounth[date[1] - 1]} ${date[2]}`;
+                            const operationBlock = document.createElement('div');
+                            operationBlock.classList.add('action__operation-list');
+                            value.forEach((item) => {
+                                const typeItem = item[1];
+                                const sumItem = item[2];
+                                const incomeItem = item[4];
+                                const idTranc = item[5]
 
-                    if (type === 'list') {
-                        blocks.append(buttonMinus);
-                        adds.onclick = () => {
-                            this.createOperation('');
+                                axios.get(`https://croesus-backend.herokuapp.com/accounts/${item[0]}`, {
+                                    headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
+                                })
+                                    .then((responsess) => {
+                                        const div = document.createElement('div');
+                                        div.classList.add('action__operation-item');
+                                        const typeSection = document.createElement('div');
+                                        typeSection.classList.add('action__type-section');
+                                        const valuesSection = document.createElement('div');
+                                        if (incomeItem) {
+                                            valuesSection.classList.add('action__refill');
+                                            valuesSection.textContent = `+${sumItem}${responsess.data.account.currency}`
+                                        } else {
+                                            valuesSection.classList.add('action__cash-out');
+                                            valuesSection.textContent = `-${sumItem}${responsess.data.account.currency}`
+                                        }
+                                        const img = document.createElement('img');
+                                        for (let z = 0; z < this.allCategory.length; z += 1) {
+                                            if (item[1].toUpperCase() === this.allCategory[z][0].toUpperCase()) {
+                                                img.src = `${this.allCategory[z][1]}`;
+                                            }
+                                        }
+                                        img.alt = '';
+                                        const nameDiv = document.createElement('div');
+                                        const type = document.createElement('div');
+                                        type.textContent = typeItem[0].toUpperCase() + typeItem.slice(1);
+                                        const name = document.createElement('div');
+                                        name.textContent = responsess.data.account.name[0].toUpperCase() + responsess.data.account.name.slice(1);
+                                        name.classList.add('action__name');
+                                        nameDiv.append(type, name);
+                                        typeSection.append(img, nameDiv);
+
+                                        div.append(typeSection, valuesSection);
+                                        operationBlock.append(div);
+                                        div.onclick = () => {
+                                            if (incomeItem === true) {
+                                                this.createOperation('', true, idTranc);
+                                            } else {
+                                                this.createOperation('minus', true, idTranc);
+                                            }
+                                        }
+                                    })
+                                    .catch(function (error) {
+                                        console.log(error);
+                                    })
+                            })
+                            dayBlock.append(blockTitle, operationBlock);
+
+                            block.append(dayBlock);
+                        })
+                        const buttonContainer = document.createElement('div');
+                        buttonContainer.classList.add('action__add-list');
+                        const addOperation = document.createElement('button');
+                        addOperation.classList.add('action__add-operation');
+                        const addImg = document.createElement('img');
+                        addImg.src = './icon/plus.svg';
+                        addImg.alt = '';
+
+                        const minusOperation = document.createElement('button');
+                        minusOperation.classList.add('action__add-operation');
+                        const minusImg = document.createElement('img');
+                        minusImg.src = './icon/minus.svg';
+                        minusImg.alt = '';
+
+                        addOperation.append(addImg);
+                        minusOperation.append(minusImg);
+                        buttonContainer.append(addOperation);
+
+                        const options = (buttonBlock, buttonAdd, buttonMinus, type) => {
+                            const blocks = buttonBlock;
+                            const adds = buttonAdd;
+                            // adds.classList.add('slide-down');
+                            const minus = buttonMinus;
+                            // minus.classList.add('slide-down');
+
+                            if (type === 'list') {
+                                blocks.classList.add('action__clicked');
+                                blocks.append(adds, minus);
+                                adds.onclick = () => {
+                                    this.createOperation('');
+                                    blocks.classList.remove('action__clicked');
+                                }
+                                minus.onclick = () => {
+                                    this.createOperation('minus');
+                                    blocks.classList.remove('action__clicked');
+                                }
+                            } else if (type === 'del') {
+                                blocks.childNodes[1].remove();
+                                adds.onclick = () => {
+                                    adds.classList.remove('slide-down');
+                                    options(blocks, buttonAdd, buttonMinus, 'list');
+                                    setTimeout(() => {
+                                        const listener = (e) => {
+                                            if (e.target.classList[0] !== 'action__add-operation') {
+                                                window.removeEventListener('click', listener);
+                                                options(blocks, adds, minus, 'del');
+                                                blocks.classList.remove('action__clicked');
+                                            }
+                                        }
+                                        window.addEventListener('click', listener);
+                                    })
+                                }
+                            }
                         }
-                        minus.onclick = () => {
-                            this.createOperation('minus');
-                        }
-                    } else if (type === 'del') {
-                        blocks.childNodes[1].remove();
-                        adds.onclick = () => {
-                            options(blocks, buttonAdd, buttonMinus, 'list');
+
+                        addOperation.onclick = () => {
+                            options(buttonContainer, addOperation, minusOperation, 'list');
                             setTimeout(() => {
                                 const listener = (e) => {
-                                    console.log(e.target.classList);
                                     if (e.target.classList[0] !== 'action__add-operation') {
                                         window.removeEventListener('click', listener);
-                                        options(blocks, adds, minus, 'del');
+                                        options(buttonContainer, addOperation, minusOperation, 'del');
+                                        buttonContainer.classList.remove('action__clicked');
                                     }
                                 }
                                 window.addEventListener('click', listener);
                             })
                         }
-                    }
-                }
-
-                addOperation.onclick = () => {
-                    options(buttonContainer, addOperation, minusOperation, 'list');
-                    setTimeout(() => {
-                        const listener = (e) => {
-                            if (e.target.classList[0] !== 'action__add-operation') {
-                                window.removeEventListener('click', listener);
-                                options(buttonContainer, addOperation, minusOperation, 'del');
-                            }
-                        }
-                        window.addEventListener('click', listener);
+                        block.append(buttonContainer);
                     })
-                }
-                block.append(buttonContainer);
+                    .catch(function (error) {
+                        console.log(error);
+                    })
             })
             .catch(function (error) {
                 console.log(error);
             })
-    })
-.catch(function (error) {
-        console.log(error);
-    })
     }
 
-    createOperation(typeOperation) {
+    createOperation(typeOperation, deletes = false, idOperation = '') {
         //  generateTitle
         const createList = (typeSelect, block, values, name, icon = false, currency, id) => {
             const value = values;
@@ -266,7 +276,6 @@ class Operation {
             headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
         })
             .then((responses) => {
-                console.log(responses)
                 this.typeList = [];
                 Object.keys(responses.data.accounts).forEach(value => {
                     Object.keys(responses.data.accounts[value]).forEach((item, index) => {
@@ -311,10 +320,10 @@ class Operation {
                 const category = document.createElement('div');
                 category.classList.add('action__operation-category');
                 if (typeOperation === '') {
+                    category.classList.add('action__operation-category_minus');
                     addCategory(category, this.addCategory);
                     this.operationType = true;
                 } else {
-                    category.classList.add('action__operation-category_minus');
                     addCategory(category, this.minusCategory);
                     this.operationType = false;
                 }
@@ -359,6 +368,7 @@ class Operation {
                 flag.type = 'checkbox';
                 questionBlock.append(question, flag);
 
+
                 function daysWeek(data, blockItem) {
                     for (let x = 0; x < data.length; x += 1) {
                         const day = document.createElement('div');
@@ -378,6 +388,7 @@ class Operation {
                 }
 
                 const repeatBlock = document.createElement('div');
+                repeatBlock.classList.add('action__repeat-block');
                 const repeat = document.createElement('div');
                 repeat.classList.add('action__title-account');
                 repeat.textContent = 'Repeat every:';
@@ -392,6 +403,38 @@ class Operation {
                 operationBlock.append(amountBlock, category, typeBlock, questionBlock, repeatBlock);
 
                 block.append(div, operationBlock);
+
+                flag.onclick = () => {
+                    if (flag.checked) {
+                        repeatBlock.classList.add('active');
+                    } else if (repeatBlock.classList.contains('active')) {
+                        repeatBlock.classList.remove('active')
+                    }
+                }
+
+                if (deletes) {
+                    const deletess = document.createElement('button');
+                    deletess.classList.add('action__delete');
+                    const delImg = document.createElement('img');
+                    delImg.src = './icon/delete.svg';
+                    delImg.alt = '';
+                    deletess.append(delImg);
+
+                    deletess.onclick = () => {
+                        axios.delete(`https://croesus-backend.herokuapp.com/transactions/${idOperation}`,
+                            {
+                                headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
+                            })
+                            .then(() => {
+                                this.generateTitle();
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            })
+                    }
+
+                    block.append(deletess);
+                }
 
                 save.onclick = () => {
                     const checkList = [['Mo', '1'], ['Tu', '2'], ['We', '3'], ['Th', '4'], ['Fr', '5'], ['Sa', '6'], ['Su', '0']];
@@ -422,22 +465,43 @@ class Operation {
                     repeatDays.childNodes.forEach(value => {
                         if (value.classList.contains('chosen') === true) {
                             checkList.forEach(values => {
-                                if (values[0] === value.textContent){
+                                if (values[0] === value.textContent) {
                                     days = values;
                                 }
                             })
 
                         }
                     })
+                    if (days === undefined) {
+                        days = ['', ''];
+                    }
                     if (suma === '' || types === '' || delays === '' || days === '') {
                         alert('НЕ заполнено!!!!')
+                    } else if (deletes) {
+                        axios.put(`https://croesus-backend.herokuapp.com/transactions/${idOperation}`, {
+                                accountId: `${this.accountsID}`,
+                                type: types,
+                                repeat: flag.checked,
+                                delay: delays,
+                                day: days[1],
+                                sum: +suma
+                            },
+                            {
+                                headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
+                            })
+                            .then(() => {
+                                this.generateTitle();
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            })
                     } else {
                         axios.post(`https://croesus-backend.herokuapp.com/transactions/`, {
                                 accountId: `${this.accountsID}`,
-                                type:  types,
+                                type: types,
                                 repeat: flag.checked,
                                 delay: delays,
-                                day: +days[1],
+                                day: days[1],
                                 sum: +suma,
                                 income: this.operationType
                             },
@@ -445,7 +509,7 @@ class Operation {
                                 headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
                             })
                             .then(() => {
-                                 this.generateTitle();
+                                this.generateTitle();
                             })
                             .catch(function (error) {
                                 console.log(error);
