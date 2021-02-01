@@ -16,11 +16,11 @@ if(localStorage.getItem('token')) {
     axios.get(`https://croesus-backend.herokuapp.com/users`, {
         headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
     })
-        .then(function () {
+        .then(() => {
             const account = new Account(document.querySelector(".action"));
             account.generateTitle();
         })
-        .catch(function (error) {
-            console.log(error);
+        .catch((error) => {
+            console.error(error);
         })
 }
