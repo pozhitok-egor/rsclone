@@ -10,7 +10,7 @@ import loading from "./loading";
 class Footer {
     constructor(block) {
         this.appBlock = block;
-        this.autorLink = [['./icon/github.svg', 'pozhitok-egor'], ['./icon/github.svg', 'SNAKE0904'], ['./icon/in.svg', 'Egor Pozhitok']];
+        this.autorLink = [['./icon/github.svg', 'pozhitok-egor', 'https://github.com/pozhitok-egor'], ['./icon/github.svg', 'SNAKE0904', 'https://github.com/SNAKE0904'], ['./icon/in.svg', 'Egor Pozhitok', 'https://www.linkedin.com/in/egor-pozhitok-3906571b7']];
         this.languageType = ['Русский', 'English'];
         this.languageSend = [['Русский', 'ru'], ['English', 'en']];
         this.currencyList = [
@@ -126,7 +126,8 @@ class Footer {
         this.appBlock.textContent = '';
 
         function creatorItem(block, data) {
-            const itemBlock = document.createElement('div');
+            const itemBlock = document.createElement('a');
+            itemBlock.href = `${data[2]}`;
             itemBlock.classList.add('footer__autor-data');
             const icon = document.createElement('img');
             const src = data[0];
