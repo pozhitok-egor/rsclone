@@ -623,6 +623,7 @@ body {
   &__title {
     font-size: 24px;
     font-weight: bold;
+    text-transform: capitalize;
     color: $white;
     text-align: center;
     padding: 20px;
