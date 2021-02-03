@@ -116,10 +116,10 @@ class Operation {
                                         const valuesSection = document.createElement('div');
                                         if (incomeItem) {
                                             valuesSection.classList.add('action__refill');
-                                            valuesSection.textContent = `+${sumItem}${responsess.data.account.currency}`
+                                            valuesSection.textContent = `+${sumItem} ${responsess.data.account.currency}`
                                         } else {
                                             valuesSection.classList.add('action__cash-out');
-                                            valuesSection.textContent = `-${sumItem}${responsess.data.account.currency}`
+                                            valuesSection.textContent = `-${sumItem} ${responsess.data.account.currency}`
                                         }
                                         const img = document.createElement('img');
                                         for (let z = 0; z < this.allCategory.length; z += 1) {
