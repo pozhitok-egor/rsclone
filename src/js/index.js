@@ -12,7 +12,10 @@ const menu = new Menu(document.querySelector(".menu"));
 const login = new Login(document.querySelector(".action"));
 const footer = new Footer(document.querySelector(".footer"));
 
-menu.addMenuItems();
+if (localStorage.getItem('lang') === null) {
+    localStorage.setItem('lang', 'en');
+}
+// menu.addMenuItems();
 login.autorization();
 footer.generateTitle();
 if(localStorage.getItem('token')) {
@@ -25,6 +28,7 @@ if(localStorage.getItem('token')) {
             localStorage.setItem('cur', `${response.data.user.settings.currency}`);
             const account = new Account(document.querySelector(".action"));
             account.generateTitle();
+            menu.addMenuItems();
             footer.generateTitle(true, response);
             loading(document.querySelector('body'), false);
         })

@@ -1,9 +1,11 @@
 import axios from "axios";
+/* eslint-disable */
 import Login from "./authorization";
+/* eslint-enable */
+
 import loading from "./loading";
 
-const login = new Login(document.querySelector(".action"));
-login.autorization();
+// login.autorization();
 
 class Footer {
     constructor(block) {
@@ -51,7 +53,8 @@ class Footer {
         this.lenguageSend = [['Русский', 'ru'], ['English', 'en']];
     }
 
-    generateTitle(typeOperation, response = '') {
+    generateTitle(typeOperation = false, response = '') {
+        const login = new Login(document.querySelector(".action"));
         const createList = (typeSelect, block, type, name) => {
             const types = typeSelect;
             const select = block;
@@ -82,7 +85,6 @@ class Footer {
                         }
                     })
                 }
-                console.log(langToSend, sumToSend, curToSend);
                 loading(document.querySelector('body'));
                 axios.put(`https://croesus-backend.herokuapp.com/users`, {
                         language: `${langToSend}`,
@@ -110,8 +112,6 @@ class Footer {
                             .catch(function (error) {
                                 console.log(error);
                             })
-                        // block.remove();
-                        // types.style.pointerEvents = 'auto';
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -124,6 +124,7 @@ class Footer {
         let languageType = 'English';
 
         this.appBlock.textContent = '';
+
         function creatorItem(block, data) {
             const itemBlock = document.createElement('div');
             itemBlock.classList.add('footer__autor-data');
@@ -165,6 +166,7 @@ class Footer {
             signOut.onclick = () => {
                 localStorage.removeItem('token');
                 login.autorization();
+                document.querySelector('.menu').textContent = '';
                 this.generateTitle();
             }
             accountName.textContent = `${response.data.user.username}`;
@@ -173,11 +175,13 @@ class Footer {
             signIn.onclick = () => {
                 localStorage.removeItem('token');
                 login.autorization();
+                document.querySelector('.menu').textContent = '';
                 this.generateTitle();
             }
             signUp.onclick = () => {
                 localStorage.removeItem('token');
                 login.registration();
+                document.querySelector('.menu').textContent = '';
                 this.generateTitle();
             }
             signBlock.append(signIn, signUp);
@@ -192,36 +196,7 @@ class Footer {
         languageBlock.classList.add('footer__settings-item');
 
         const language = document.createElement('div');
-        language.onclick = () => {
-            const languageSelectList = document.createElement('div');
-            languageSelectList.classList.add('action__settings-account');
-            languageSelectList.classList.add('action__list');
-            languageSelectList.classList.add('footer__list');
-            languageSelectList.classList.add('slide-up');
-            for (let x = 0; x < this.languageType.length; x += 1) {
-                this.lenguageSend.forEach(value => {
-                    if (value[1] === localStorage.getItem('lang')) {
-                        if (value[0] === 'Русский') {
-                            createList(language, languageSelectList, 'Язык', this.languageType[x]);
-                        } else if (value[0] === 'English') {
-                            createList(language, languageSelectList, 'Language', this.languageType[x]);
-                        }
-                    }
-                })
-            }
-            languageBlock.append(languageSelectList);
-            language.style.pointerEvents = 'none';
-            setTimeout(() => {
-                const listener = (e) => {
-                    if (e.target.classList[0] !== 'action__list_option') {
-                        window.removeEventListener('click', listener);
-                        languageSelectList.remove();
-                        language.style.pointerEvents = 'auto';
-                    }
-                }
-                window.addEventListener('click', listener);
-            })
-        }
+
         languageBlock.append(language);
 
         if (localStorage.getItem('color') === null) {
@@ -237,7 +212,6 @@ class Footer {
             color.classList.add('footer__light-color');
             document.querySelector('body').classList.add('light');
         }
-
         color.onclick = () => {
             if (color.classList.contains('footer__dark-color')) {
                 color.classList.remove('footer__dark-color')
@@ -258,41 +232,77 @@ class Footer {
             }
         }
 
+
         const currencyBlock = document.createElement('div');
         currencyBlock.classList.add('footer__settings-item');
 
         const currency = document.createElement('div');
-        currency.onclick = () => {
-            const currencySelectList = document.createElement('div');
-            currencySelectList.classList.add('action__settings-account');
-            currencySelectList.classList.add('action__list');
-            currencySelectList.classList.add('footer__list');
-            currencySelectList.classList.add('slide-up');
-            for (let x = 0; x < this.currencyList.length; x += 1) {
-                this.lenguageSend.forEach(value => {
-                    if (value[1] === localStorage.getItem('lang')) {
-                        if (value[0] === 'Русский') {
-                            createList(currency, currencySelectList, 'Валюта', this.currencyList[x]);
-                        } else if (value[0] === 'English') {
-                            createList(currency, currencySelectList, 'Currency', this.currencyList[x]);
+
+        currencyBlock.append(currency);
+
+        if (typeOperation) {
+            language.onclick = () => {
+                const languageSelectList = document.createElement('div');
+                languageSelectList.classList.add('action__settings-account');
+                languageSelectList.classList.add('action__list');
+                languageSelectList.classList.add('footer__list');
+                languageSelectList.classList.add('slide-up');
+                for (let x = 0; x < this.languageType.length; x += 1) {
+                    this.lenguageSend.forEach(value => {
+                        if (value[1] === localStorage.getItem('lang')) {
+                            if (value[0] === 'Русский') {
+                                createList(language, languageSelectList, 'Язык', this.languageType[x]);
+                            } else if (value[0] === 'English') {
+                                createList(language, languageSelectList, 'Language', this.languageType[x]);
+                            }
+                        }
+                    })
+                }
+                languageBlock.append(languageSelectList);
+                language.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    const listener = (e) => {
+                        if (e.target.classList[0] !== 'action__list_option') {
+                            window.removeEventListener('click', listener);
+                            languageSelectList.remove();
+                            language.style.pointerEvents = 'auto';
                         }
                     }
+                    window.addEventListener('click', listener);
                 })
             }
-            currencyBlock.append(currencySelectList);
-            currency.style.pointerEvents = 'none';
-            setTimeout(() => {
-                const listener = (e) => {
-                    if (e.target.classList[0] !== 'action__list_option') {
-                        window.removeEventListener('click', listener);
-                        currencySelectList.remove();
-                        currency.style.pointerEvents = 'auto';
-                    }
+
+            currency.onclick = () => {
+                const currencySelectList = document.createElement('div');
+                currencySelectList.classList.add('action__settings-account');
+                currencySelectList.classList.add('action__list');
+                currencySelectList.classList.add('footer__list');
+                currencySelectList.classList.add('slide-up');
+                for (let x = 0; x < this.currencyList.length; x += 1) {
+                    this.lenguageSend.forEach(value => {
+                        if (value[1] === localStorage.getItem('lang')) {
+                            if (value[0] === 'Русский') {
+                                createList(currency, currencySelectList, 'Валюта', this.currencyList[x]);
+                            } else if (value[0] === 'English') {
+                                createList(currency, currencySelectList, 'Currency', this.currencyList[x]);
+                            }
+                        }
+                    })
                 }
-                window.addEventListener('click', listener);
-            })
+                currencyBlock.append(currencySelectList);
+                currency.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    const listener = (e) => {
+                        if (e.target.classList[0] !== 'action__list_option') {
+                            window.removeEventListener('click', listener);
+                            currencySelectList.remove();
+                            currency.style.pointerEvents = 'auto';
+                        }
+                    }
+                    window.addEventListener('click', listener);
+                })
+            }
         }
-        currencyBlock.append(currency);
 
         settings.append(settingsTitle, languageBlock, color, currencyBlock);
 

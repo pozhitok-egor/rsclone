@@ -1,8 +1,14 @@
 import axios from 'axios';
 import Account from './account'
 import loading from "./loading";
+import Menu from "./menu";
+/* eslint-disable */
+import Footer from "./footer";
+/* eslint-enable */
 
 const account = new Account(document.querySelector(".action"));
+const menu = new Menu(document.querySelector(".menu"));
+const footer = new Footer(document.querySelector(".footer"));
 
 class Login {
     constructor(block) {
@@ -91,6 +97,8 @@ class Login {
                         .then(function (responses) {
                             localStorage.setItem('lang', `${responses.data.user.settings.language}`);
                             account.generateTitle();
+                            menu.addMenuItems();
+                            footer.generateTitle(true, response);
                             loading(document.querySelector('body'), false);
                         })
                         .catch(function (error) {
@@ -284,6 +292,8 @@ class Login {
                             .then(function (responses) {
                                 localStorage.setItem('lang', `${responses.data.user.settings.language}`);
                                 account.generateTitle();
+                                menu.addMenuItems();
+                                footer.generateTitle(true, response);
                                 loading(document.querySelector('body'), false);
                             })
                             .catch(function (error) {
