@@ -75,7 +75,7 @@ body {
 }
 
 .action {
-  background: linear-gradient(42.83deg, #080F58 0%, #7D67EC 124.24%);
+  background: url("../icon/template.png"), linear-gradient(42.83deg, #080F58 0%, #7D67EC 124.24%);
   width: 95%;
   height: 100%;
   padding: 10px 20px;
@@ -258,8 +258,6 @@ body {
     color: #FFFFFF;
   }
 
-  &__total {}
-
   &__save {
     color: #33EC9E;
     cursor: pointer;
@@ -421,8 +419,6 @@ body {
     user-select: none;
   }
 
-  &__question {}
-
   &__day-block {
     display: flex;
     flex-direction: column;
@@ -432,9 +428,6 @@ body {
     line-height: 33px;
     color: #FFFFFF;
     margin-top: 20px;
-  }
-
-  &__date {
   }
 
   &__operation-list {
@@ -627,6 +620,9 @@ body {
     align-self: flex-start;
   }
   &__autor-data {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
     font-size: 16px;
     line-height: 22px;
   }
