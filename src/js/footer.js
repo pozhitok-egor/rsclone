@@ -48,7 +48,7 @@ class Footer {
             "KRW",
             "PLN"
         ];
-        this.rusLang = ['Не вошли в систему', 'Разлог.', 'Авториз.', 'Зарег.', 'Настройки:', 'Язык:', 'Тема:', 'Валюта:', 'Сделано:'];
+        this.rusLang = ['Не вошли в систему', 'Выйти', 'Войти', 'Регистрация', 'Настройки:', 'Язык:', 'Тема:', 'Валюта:', 'Сделано:'];
         this.engLang = ['Not Signed In', 'Sign Out', 'Sign In', 'Sign Up', 'Settings:', 'Language:', 'Color:', 'Currency:', 'Made by:'];
         this.lenguageSend = [['Русский', 'ru'], ['English', 'en']];
     }
