@@ -1,4 +1,5 @@
 import axios from "axios";
+import loading from "./loading";
 
 class Operation {
     constructor(block) {
@@ -25,6 +26,7 @@ class Operation {
 
     generateTitle() {
         this.dataOperation = [];
+        loading(document.querySelector('body'));
         axios.get(`https://croesus-backend.herokuapp.com/transactions/all`, {
             headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
         })
@@ -222,6 +224,7 @@ class Operation {
                             })
                         }
                         block.append(buttonContainer);
+                        loading(document.querySelector('body'), false);
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -290,6 +293,7 @@ class Operation {
         }
 
 
+        loading(document.querySelector('body'));
         axios.get(`https://croesus-backend.herokuapp.com/accounts/all`, {
             headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
         })
@@ -615,8 +619,9 @@ class Operation {
                     if (suma === '' || types === undefined) {
                         alert('НЕ заполнено!!!!')
                     } else if ((flag.checked && delays === undefined) || (flag.checked && days === undefined)) {
-                            alert('Выберите повторы!!!!')
+                        alert('Выберите повторы!!!!')
                     } else if (deletes) {
+                        loading(document.querySelector('body'));
                         axios.put(`https://croesus-backend.herokuapp.com/transactions/${idOperation}`, {
                                 accountId: `${this.accountsID}`,
                                 type: types,
@@ -630,32 +635,35 @@ class Operation {
                             })
                             .then(() => {
                                 this.generateTitle();
+                                loading(document.querySelector('body'), false);
                             })
                             .catch(function (error) {
                                 console.log(error);
                             })
                     } else {
-                        console.log(types, delays, days[1])
-                        // axios.post(`https://croesus-backend.herokuapp.com/transactions/`, {
-                        //         accountId: `${this.accountsID}`,
-                        //         type: types,
-                        //         repeat: flag.checked,
-                        //         delay: delays,
-                        //         day: days[1],
-                        //         sum: +suma,
-                        //         income: this.operationType
-                        //     },
-                        //     {
-                        //         headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
-                        //     })
-                        //     .then(() => {
-                        //         this.generateTitle();
-                        //     })
-                        //     .catch(function (error) {
-                        //         console.log(error);
-                        //     })
+                        loading(document.querySelector('body'));
+                        axios.post(`https://croesus-backend.herokuapp.com/transactions/`, {
+                                accountId: `${this.accountsID}`,
+                                type: types,
+                                repeat: flag.checked,
+                                delay: delays,
+                                day: days[1],
+                                sum: +suma,
+                                income: this.operationType
+                            },
+                            {
+                                headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
+                            })
+                            .then(() => {
+                                this.generateTitle();
+                                loading(document.querySelector('body'), false);
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            })
                     }
                 }
+                loading(document.querySelector('body'), false);
             })
             .catch(function (error) {
                 console.log(error);

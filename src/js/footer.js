@@ -1,5 +1,6 @@
 import axios from "axios";
 import Login from "./authorization";
+import loading from "./loading";
 
 const login = new Login(document.querySelector(".action"));
 login.autorization();
@@ -82,6 +83,7 @@ class Footer {
                     })
                 }
                 console.log(langToSend, sumToSend, curToSend);
+                loading(document.querySelector('body'));
                 axios.put(`https://croesus-backend.herokuapp.com/users`, {
                         language: `${langToSend}`,
                         currency: `${curToSend}`,
@@ -101,6 +103,7 @@ class Footer {
                                     if (value.classList.contains('clicked')) {
                                         value.click();
                                         this.generateTitle(typeOperation, responsess);
+                                        loading(document.querySelector('body'), false);
                                     }
                                 })
                             })
@@ -332,25 +335,6 @@ class Footer {
         })
         this.appBlock.append(title, account, settings, autor, course);
 
-
-
-        // if (window.innerWidth < 600) {
-        //     if (document.querySelector('body').lastElementChild.classList.contains('popup') === false) {
-        //         document.querySelector('body').append(popup)
-        //     }
-        // }
-        // window.addEventListener('resize', () => {
-        //     if (window.innerWidth < 600) {
-        //         if (document.querySelector('body').lastElementChild.classList.contains('popup') === false) {
-        //             document.querySelector('body').append(popup)
-        //         }
-        //     } else {
-        //         popup.remove();
-        //         if (document.querySelector('footer').classList.contains('actives')) {
-        //             document.querySelector('footer').classList.remove('actives')
-        //         }
-        //     }
-        // })
     }
 }
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+import loading from "./loading";
 
 class Account {
     constructor(block) {
@@ -258,13 +259,14 @@ class Account {
             deletes.append(delImg);
 
             deletes.onclick = () => {
+                loading(document.querySelector('body'));
                 axios.delete(`https://croesus-backend.herokuapp.com/accounts/${idAcc}`,
                     {
                         headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
                     })
-                    .then((response) => {
-                        console.log(response)
+                    .then(() => {
                         this.generateTitle();
+                        loading(document.querySelector('body'), false);
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -282,7 +284,7 @@ class Account {
                     currencyBalanceInput.value = '0';
                 }
                 this.accountList.push([titleInput.value, currencyBalanceInput.value, currencySelect.textContent, typeInput.textContent.toLowerCase()]);
-
+                loading(document.querySelector('body'));
                 if (typeOperation) {
                     axios.put(`https://croesus-backend.herokuapp.com/accounts/${idAcc}`, {
                             name: `${titleInput.value}`,
@@ -294,9 +296,9 @@ class Account {
                         {
                             headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
                         })
-                        .then((response) => {
-                            console.log(response)
+                        .then(() => {
                             this.generateTitle();
+                            loading(document.querySelector('body'), false);
                         })
                         .catch(function (error) {
                             console.log(error);
@@ -314,6 +316,7 @@ class Account {
                         })
                         .then(() => {
                             this.generateTitle();
+                            loading(document.querySelector('body'), false);
                         })
                         .catch(function (error) {
                             console.log(error);
@@ -325,12 +328,12 @@ class Account {
     }
 
     generateTitle() {
-        // console.log(localStorage.getItem('lang'));
         document.querySelector('.menu').childNodes.forEach(value => {
             const item = value;
             item.disabled = false;
         });
         this.accountList = [];
+        loading(document.querySelector('body'));
         axios.get(`https://croesus-backend.herokuapp.com/accounts/all`, {
             headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
         })
@@ -344,7 +347,6 @@ class Account {
                     });
                     this.accountList.push(massData);
                 })
-                // this.generateTitle(this.appBlock);
 
                 const block = this.appBlock;
                 block.textContent = '';
@@ -392,6 +394,7 @@ class Account {
 
                         account.append(accountTitle, accountAdd);
                         block.append(header, account, acountList);
+                        loading(document.querySelector('body'), false);
                     })
                     .catch(function (error) {
                         console.log(error);

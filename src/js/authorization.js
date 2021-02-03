@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Account from './account'
+import loading from "./loading";
 
 const account = new Account(document.querySelector(".action"));
 
@@ -77,6 +78,7 @@ class Login {
         loginButton.type = 'button';
         loginButton.classList.add('action__button');
         loginButton.onclick = () => {
+            loading(document.querySelector('body'));
             axios.post(`https://croesus-backend.herokuapp.com/users/login`, {
                 username: `${loginInput.value}`,
                 password: `${loginPass.value}`
@@ -89,6 +91,7 @@ class Login {
                         .then(function (responses) {
                             localStorage.setItem('lang', `${responses.data.user.settings.language}`);
                             account.generateTitle();
+                            loading(document.querySelector('body'), false);
                         })
                         .catch(function (error) {
                             console.log(error);
@@ -266,6 +269,7 @@ class Login {
                         lang = value;
                     }
                 })
+                loading(document.querySelector('body'));
                 axios.post(`https://croesus-backend.herokuapp.com/users/register`, {
                     username: `${autorInput.value}`,
                     password: `${autorPass.value}`,
@@ -280,6 +284,7 @@ class Login {
                             .then(function (responses) {
                                 localStorage.setItem('lang', `${responses.data.user.settings.language}`);
                                 account.generateTitle();
+                                loading(document.querySelector('body'), false);
                             })
                             .catch(function (error) {
                                 console.log(error);
