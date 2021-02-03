@@ -169,7 +169,7 @@ class Footer {
                 document.querySelector('.menu').textContent = '';
                 this.generateTitle();
             }
-            accountName.textContent = `${response.data.user.username}`;
+            console.log(response.data.user.username)
             signBlock.append(signOut);
         } else {
             signIn.onclick = () => {
@@ -321,7 +321,11 @@ class Footer {
         this.lenguageSend.forEach(value => {
             if (value[1] === localStorage.getItem('lang')) {
                 if (value[0] === 'Русский') {
-                    accountName.textContent = `${this.rusLang[0]}`;
+                    if (typeOperation) {
+                        accountName.textContent = `${response.data.user.username}`;
+                    } else {
+                        accountName.textContent = `${this.rusLang[0]}`;
+                    }
                     signOut.textContent = `${this.rusLang[1]}`;
                     signIn.textContent = `${this.rusLang[2]}`;
                     signUp.textContent = `${this.rusLang[3]}`;
@@ -331,7 +335,11 @@ class Footer {
                     currency.textContent = `${this.rusLang[7]} ${curencyValue}`;
                     autorTitle.textContent = `${this.rusLang[8]}`;
                 } else if (value[0] === 'English') {
-                    accountName.textContent = `${this.engLang[0]}`;
+                    if (typeOperation) {
+                        accountName.textContent = `${response.data.user.username}`;
+                    } else {
+                        accountName.textContent = `${this.engLang[0]}`;
+                    }
                     signOut.textContent = `${this.engLang[1]}`;
                     signIn.textContent = `${this.engLang[2]}`;
                     signUp.textContent = `${this.engLang[3]}`;

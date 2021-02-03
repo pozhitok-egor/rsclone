@@ -35,7 +35,7 @@ class Menu {
                 button.classList.add('clicked');
             }
             button.append(img);
-            button.disabled = true;
+            // button.disabled = true;
             this.appBlock.append(button);
         }
 
