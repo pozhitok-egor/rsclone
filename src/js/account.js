@@ -42,6 +42,9 @@ class Account {
         this.totalSum = 0;
         this.valueType = 'USD';
         this.accountList = [];
+        this.rusLang = [['Счёта'], ['Сохранить', 'Название', 'Тип', 'Валюта', 'Текущий баланс', 'Включить в общий баланс?']];
+        this.engLang = [['Accounts'], ['Save', 'Title', 'Type', 'Currency', 'Current balance', 'Include in total balance?']];
+        this.lenguageSend = [['Русский', 'ru'], ['English', 'en']];
     }
 
     addAccount(block, id) {
@@ -125,17 +128,17 @@ class Account {
         sum.textContent = `${this.totalSum} ${this.valueType}`;
         const save = document.createElement('div');
         save.classList.add('action__save');
-        save.textContent = 'Save';
         div.append(sum, save);
 
         const form = document.createElement('form');
         form.classList.add('action__account-form');
 
+
+
         const titleBlock = document.createElement('div');
         titleBlock.classList.add('action__item-block');
         const title = document.createElement('div');
         title.classList.add('action__title-account');
-        title.textContent = 'Title';
         const titleInput = document.createElement('input');
         titleInput.classList.add('action__input-account');
         titleBlock.append(title, titleInput);
@@ -145,7 +148,6 @@ class Account {
         typeBlock.classList.add('action__input-account_select');
         const type = document.createElement('div');
         type.classList.add('action__title-account');
-        type.textContent = 'Type';
         const typeInput = document.createElement('div');
         typeInput.classList.add('action__input-account');
         const img = document.createElement('img');
@@ -180,7 +182,6 @@ class Account {
         currencyBlock.classList.add('action__input-account_select');
         const currency = document.createElement('div');
         currency.classList.add('action__title-account');
-        currency.textContent = 'Currency';
         const currencySelect = document.createElement('div');
         currencySelect.classList.add('action__input-account');
         currencySelect.append(`${this.currencyList[0]}`);
@@ -211,7 +212,6 @@ class Account {
         currencyBalanceBlock.classList.add('action__item-block');
         const currencyBalance = document.createElement('div');
         currencyBalance.classList.add('action__title-account');
-        currencyBalance.textContent = 'Currency balance';
         const currencyBalanceInput = document.createElement('input');
         currencyBalanceInput.classList.add('action__input-account');
         currencyBalanceInput.value = '0';
@@ -221,10 +221,29 @@ class Account {
         questionBlock.classList.add('action__question');
         const question = document.createElement('span');
         question.classList.add('action__title-account');
-        question.textContent = 'Include in total balance?';
         const flag = document.createElement('input');
         flag.type = 'checkbox';
         questionBlock.append(question, flag);
+
+        this.lenguageSend.forEach(value => {
+            if (value[1] === localStorage.getItem('lang')) {
+                if (value[0] === 'Русский') {
+                    save.textContent = `${this.rusLang[1][0]}`;
+                    title.textContent = `${this.rusLang[1][1]}`;
+                    type.textContent = `${this.rusLang[1][2]}`;
+                    currency.textContent = `${this.rusLang[1][3]}`;
+                    currencyBalance.textContent = `${this.rusLang[1][4]}`;
+                    question.textContent = `${this.rusLang[1][5]}`;
+                } else if (value[0] === 'English') {
+                    save.textContent = `${this.engLang[1][0]}`;
+                    title.textContent = `${this.engLang[1][1]}`;
+                    type.textContent = `${this.engLang[1][2]}`;
+                    currency.textContent = `${this.engLang[1][3]}`;
+                    currencyBalance.textContent = `${this.engLang[1][4]}`;
+                    question.textContent = `${this.engLang[1][5]}`;
+                }
+            }
+        })
 
         form.append(titleBlock, typeBlock, currencyBlock, currencyBalanceBlock, questionBlock);
 
@@ -239,7 +258,6 @@ class Account {
             deletes.append(delImg);
 
             deletes.onclick = () => {
-                console.log('delete')
                 axios.delete(`https://croesus-backend.herokuapp.com/accounts/${idAcc}`,
                     {
                         headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
@@ -307,6 +325,11 @@ class Account {
     }
 
     generateTitle() {
+        // console.log(localStorage.getItem('lang'));
+        document.querySelector('.menu').childNodes.forEach(value => {
+            const item = value;
+            item.disabled = false;
+        });
         this.accountList = [];
         axios.get(`https://croesus-backend.herokuapp.com/accounts/all`, {
             headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
@@ -331,7 +354,9 @@ class Account {
                 })
                     .then((response) => {
                         this.totalSum = response.data.user.settings.totalSum;
+                        localStorage.setItem('sum', `${this.totalSum}`);
                         this.valueType = response.data.user.settings.currency;
+                        localStorage.setItem('cur', `${response.data.user.settings.currency}`);
 
                         const header = document.createElement('div');
                         header.classList.add('action__header');
@@ -344,7 +369,17 @@ class Account {
                         account.classList.add('action__account-title');
                         const accountTitle = document.createElement('div');
                         accountTitle.classList.add('action__title');
-                        accountTitle.textContent = 'Accounts';
+
+                        this.lenguageSend.forEach(value => {
+                            if (value[1] === localStorage.getItem('lang')) {
+                                if (value[0] === 'Русский') {
+                                    accountTitle.textContent = `${this.rusLang[0][0]}`;
+                                } else if (value[0] === 'English') {
+                                    accountTitle.textContent = `${this.engLang[0][0]}`;
+                                }
+                            }
+                        })
+
                         const accountAdd = document.createElement('div');
                         accountAdd.classList.add('action__add')
                         accountAdd.onclick = () => {

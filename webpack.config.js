@@ -182,7 +182,10 @@ const config = {
       {from: './src/icon/analytics-chosen.svg', to: './icon/analytics-chosen.svg'},
       {from: './src/icon/operations-chosen.svg', to: './icon/operations-chosen.svg'},
       {from: './src/icon/accounts.svg', to: './icon/accounts.svg'},
-      {from: './src/icon/options-chosen.svg', to: './icon/options-chosen.svg'}
+      {from: './src/icon/options-chosen.svg', to: './icon/options-chosen.svg'},
+      {from: './src/icon/github.svg', to: './icon/github.svg'},
+      {from: './src/icon/in.svg', to: './icon/in.svg'},
+      {from: './src/icon/rs.svg', to: './icon/rs.svg'}
     ]),
   ],
 

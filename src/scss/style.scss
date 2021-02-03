@@ -73,6 +73,7 @@ body {
   height: 100%;
   padding: 10px 20px;
   overflow: overlay;
+  position: relative;
 
   &__form, &__account-title {
     display: flex;
@@ -105,6 +106,8 @@ body {
     align-items: center;
     text-align: center;
     width: 250px;
+    cursor: pointer;
+    user-select: none;
   }
 
   &__settings-data {
@@ -119,6 +122,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  &__list_option:hover {
+    background-color: gray;
   }
 
   &__account-title {
@@ -205,6 +214,7 @@ body {
   &__input {
     width: 100%;
     margin-bottom: 10px;
+    padding: 0 10px;
   }
 
   &__autorization-data {
@@ -376,6 +386,11 @@ body {
     margin-top: 10px;
   }
 
+  &__days {
+    opacity: 0;
+    transition: 0.2s;
+  }
+
   &__days-item {
     margin: 0 5px;
     max-width: 25%;
@@ -504,13 +519,107 @@ body {
   }
 
   &__repeat-block {
-    opacity: 0;
+    display: none;
     transition: 1s;
+  }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24px;
+  line-height: 33px;
+  color: #080F58;
+  padding: 50px;
+  width: 376px;
+
+  &__title {
+    font-size: 48px;
+    line-height: 66px;
+  }
+
+  &__account {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100px;
+  }
+
+  &__sign-block {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__sign {
+    width: 73px;
+    height: 32px;
+    background-color: #080F58;
+    border-radius: 50px;
+    color: #EC336B;
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  &__settings {
+    font-size: 24px;
+    line-height: 33px;
+    align-self: flex-start;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__list {
+    top: 22px
+  }
+
+  &__settings-item {
+    font-size: 16px;
+    line-height: 22px;
+    position: relative;
+  }
+
+  &__dark-color:after, &__light-color:after {
+    position: absolute;
+    content: "";
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    border: 2px solid;
+    left: 55px;
+    top: -3px;
+    transition: 0.3s;
+  }
+
+  &__light-color:after {
+    background: #FFFFFF;
+  }
+
+  &__dark-color:after {
+    background: #080F58;
+  }
+
+  &__autors {
+    font-size: 24px;
+    line-height: 33px;
+    align-self: flex-start;
+  }
+  &__autor-data {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  &__autor-data > img {
+    margin-right: 11px;
   }
 }
 
 .analytics {
   height: 100%;
+
   &__title {
     font-size: 24px;
     font-weight: bold;
@@ -518,9 +627,11 @@ body {
     text-align: center;
     padding: 20px;
   }
+
   &__line-graph {
     height: 30%;
   }
+
   &__pie-graph {
     height: 30%;
   }
@@ -530,23 +641,39 @@ body {
   display: flex;
   align-items: center;
   margin: 5px;
+
   &__color {
     width: 20px;
     height: 20px;
     border-radius: 50px;
   }
+
   &__text {
     margin: 0 10px;
     color: $white;
     text-transform: capitalize;
   }
+
   &__percent {
     color: $white;
   }
 }
 
 .active {
-  opacity: 1;
+  display: block;
+}
+
+.actives {
+  z-index: 555;
+}
+
+.popup {
+  position: absolute;
+  z-index: 250;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.7;
 }
 
 .chosen {
@@ -596,11 +723,13 @@ body {
     border-radius: 20px 20px 0 0;
     bottom: 0;
     left: 0;
+    z-index: 999;
   }
 
   .action {
     padding: 60px 20px 40px;
     width: 100%;
+    z-index: 100;
 
     &__title {
       font-size: 24px;
@@ -680,6 +809,15 @@ body {
     &__add-list {
       bottom: 90px;
     }
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 128px;
+    height: 685px;
+    width: 100%;
+    background: white;
+    transition: 0.3s;
   }
 
   .menu {

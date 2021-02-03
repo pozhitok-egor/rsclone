@@ -43,6 +43,8 @@ class Login {
         ];
         this.languageType = ['Русский', 'English'];
         this.lenguageSend = [['Русский', 'ru'], ['English', 'en']];
+        this.rusLang = [['Регистрация', 'Имя Пользователя', 'Пароль', 'Язык', 'Валюта', 'Зарегестрироваться'], ['Авторизация', 'Имя Пользователя', 'Пароль', 'авторизоваться']];
+        this.engLang = [['Register', 'UserName', 'Password', 'Language', 'Currency', 'Register'], ['Login', 'UserName', 'Password', 'Login']];
     }
 
     autorization() {
@@ -52,15 +54,13 @@ class Login {
         form.classList.add('action__form');
         const login = document.createElement('div');
         login.classList.add('action__autorization-title');
-        login.textContent = 'Login';
+
 
         const userNameLogin = document.createElement('div');
         userNameLogin.classList.add('action__subtitle');
-        userNameLogin.textContent = 'UserName';
 
         const passwordLogin = document.createElement('div');
         passwordLogin.classList.add('action__subtitle');
-        passwordLogin.textContent = 'Password';
 
         const loginInput = document.createElement('input');
         loginInput.classList.add('action__input');
@@ -75,7 +75,6 @@ class Login {
 
         const loginButton = document.createElement('button');
         loginButton.type = 'button';
-        loginButton.textContent = 'Login';
         loginButton.classList.add('action__button');
         loginButton.onclick = () => {
             axios.post(`https://croesus-backend.herokuapp.com/users/login`, {
@@ -87,7 +86,8 @@ class Login {
                     axios.get(`https://croesus-backend.herokuapp.com/users`, {
                         headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
                     })
-                        .then(function () {
+                        .then(function (responses) {
+                            localStorage.setItem('lang', `${responses.data.user.settings.language}`);
                             account.generateTitle();
                         })
                         .catch(function (error) {
@@ -97,9 +97,6 @@ class Login {
                 .catch(function (error) {
                     console.log(error);
                 });
-            // console.log('login', loginInput.value);
-            // console.log('password', loginPass.value);
-
 
         }
 
@@ -110,6 +107,22 @@ class Login {
 
         loginItem.append(login, dataBlock, loginButton);
         form.append(loginItem);
+
+        this.lenguageSend.forEach(value => {
+            if (value[1] === localStorage.getItem('lang')) {
+                if (value[0] === 'Русский') {
+                    login.textContent = `${this.rusLang[1][0]}`;
+                    userNameLogin.textContent = `${this.rusLang[1][1]}`;
+                    passwordLogin.textContent = `${this.rusLang[1][2]}`;
+                    loginButton.textContent = `${this.rusLang[1][3]}`;
+                } else if (value[0] === 'English') {
+                    login.textContent = `${this.engLang[1][0]}`;
+                    userNameLogin.textContent = `${this.engLang[1][1]}`;
+                    passwordLogin.textContent = `${this.engLang[1][2]}`;
+                    loginButton.textContent = `${this.engLang[1][3]}`;
+                }
+            }
+        })
         block.append(form);
     }
 
@@ -153,27 +166,22 @@ class Login {
 
         const register = document.createElement('div');
         register.classList.add('action__autorization-title');
-        register.textContent = 'Register';
+
 
         const userNameAutor = document.createElement('div');
         userNameAutor.classList.add('action__subtitle');
-        userNameAutor.textContent = 'UserName';
 
         const passwordAutor = document.createElement('div');
         passwordAutor.classList.add('action__subtitle');
-        passwordAutor.textContent = 'Password';
 
         const confirmPassword = document.createElement('div');
         confirmPassword.classList.add('action__subtitle');
-        confirmPassword.textContent = 'Confirm Password';
 
         const language = document.createElement('div');
         language.classList.add('action__subtitle');
-        language.textContent = 'Language';
 
         const currency = document.createElement('div');
         currency.classList.add('action__subtitle');
-        currency.textContent = 'Currency';
 
 
         const autorInput = document.createElement('input');
@@ -246,16 +254,12 @@ class Login {
         const autorButton = document.createElement('button');
         autorButton.classList.add('action__button');
         autorButton.type = 'button';
-        autorButton.textContent = 'Register';
         autorButton.onclick = () => {
             if (autorInput.value === '' || autorPass.value === '' || autorPassRepit.value === '') {
                 alert('Не всё заполнено!')
             } else if (autorPass.value !== autorPassRepit.value) {
                 alert('WRONG!!');
             } else {
-                console.log(autorInput.value);
-                console.log(autorPass.value);
-                console.log(autorPassRepit.value);
                 let lang;
                 this.lenguageSend.forEach(value => {
                     if (languageSelect.textContent === value[0]) {
@@ -273,7 +277,8 @@ class Login {
                         axios.get(`https://croesus-backend.herokuapp.com/users`, {
                             headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
                         })
-                            .then(function () {
+                            .then(function (responses) {
+                                localStorage.setItem('lang', `${responses.data.user.settings.language}`);
                                 account.generateTitle();
                             })
                             .catch(function (error) {
@@ -306,6 +311,29 @@ class Login {
         autorItem.append(register, item, autorButton);
 
         form.append(autorItem);
+
+        this.lenguageSend.forEach(value => {
+            if (value[1] === localStorage.getItem('lang')) {
+                if (value[0] === 'Русский') {
+                    register.textContent = `${this.rusLang[0][0]}`;
+                    userNameAutor.textContent = `${this.rusLang[0][1]}`;
+                    passwordAutor.textContent = `${this.rusLang[0][2]}`;
+                    confirmPassword.textContent = `${this.rusLang[0][3]}`;
+                    language.textContent = `${this.rusLang[0][4]}`;
+                    currency.textContent = `${this.rusLang[0][5]}`;
+                    autorButton.textContent = `${this.rusLang[0][6]}`;
+                } else if (value[0] === 'English') {
+                    register.textContent = `${this.engLang[0][0]}`;
+                    userNameAutor.textContent = `${this.engLang[0][1]}`;
+                    passwordAutor.textContent = `${this.engLang[0][2]}`;
+                    confirmPassword.textContent = `${this.engLang[0][3]}`;
+                    language.textContent = `${this.engLang[0][4]}`;
+                    currency.textContent = `${this.engLang[0][5]}`;
+                    autorButton.textContent = `${this.engLang[0][6]}`;
+                }
+            }
+        })
+
         block.append(form);
     }
 }
