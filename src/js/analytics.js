@@ -39,7 +39,6 @@ export default class Analytics {
             while (this.appBlock.firstChild) {
               this.appBlock.removeChild(this.appBlock.firstChild);
             }
-            console.log(this.transactions)
             const analyticsBlock = document.createElement('div');
             analyticsBlock.classList.add('analytics');
             const Title = document.createElement('div');
