@@ -53,24 +53,25 @@ body {
 .menu {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 20px 0 700px;
   width: 5%;
+  padding: 0 10px;
   align-items: center;
 
   button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
     background-color: transparent;
     width: 26px;
     height: 26px;
   }
   &__item {
-    max-width: 40px;
     cursor: pointer;
     user-select: none;
   }
 
   &__hidden {
-    display: none;
+    display: none!important;
   }
 }
 
@@ -734,12 +735,16 @@ body {
     width: 100%;
     padding: 17px 50px 17px;
     flex-direction: row;
+    justify-content: space-around;
     position: absolute;
     background: #FFFFFF;
     border-radius: 20px 20px 0 0;
     bottom: 0;
     left: 0;
     z-index: 999;
+    & button {
+      margin-top: 0;
+    }
   }
 
   .action {
@@ -850,7 +855,7 @@ body {
 
   .menu {
     &__hidden {
-      display: block;
+      display: block!important;
     }
   }
 }
