@@ -13,13 +13,13 @@ function getRandomColor() {
 export default class Analytics {
   constructor(block) {
     this.appBlock = block;
-    this.lang = 'en-US';
     this.transtations = [];
     this.pieBlock = null;
     this.pie = null;
     this.lineBlock = null;
     this.line = null;
     this.accounts = [];
+    this.lang = localStorage.getItem('lang');
   }
 
   generateTitle() {
@@ -39,27 +39,34 @@ export default class Analytics {
             while (this.appBlock.firstChild) {
               this.appBlock.removeChild(this.appBlock.firstChild);
             }
+            console.log(this.transactions)
             const analyticsBlock = document.createElement('div');
             analyticsBlock.classList.add('analytics');
-            const pieTitle = document.createElement('div');
-            pieTitle.classList.add('analytics__title');
-            pieTitle.textContent = `${new Date().toLocaleString(this.lang, { month: 'long' })}`;
-            const pieGraphBlock = document.createElement('div');
-            pieGraphBlock.classList.add('analytics__pie-graph'); const pieGraph = document.createElement('canvas');
-            pieGraphBlock.appendChild(pieGraph)
-            this.pieBlock = pieGraph;
-            analyticsBlock.append(...[pieTitle, pieGraphBlock]);
-            const lineTitle = document.createElement('div');
-            lineTitle.classList.add('analytics__title');
-            lineTitle.textContent = `Last Month in ${this.user.settings.currency}`;
-            const lineGraphBlock = document.createElement('div');
-            lineGraphBlock.classList.add('analytics__line-graph');
-            const lineGraph = document.createElement('canvas');
-            lineGraphBlock.appendChild(lineGraph)
-            this.lineBlock = lineGraph;
+            const Title = document.createElement('div');
+            Title.classList.add('analytics__title');
+            if (this.transactions.length < 3) {
+              analyticsBlock.append(Title)
+              Title.textContent = this.lang === 'en' ? `Not enough data` : `Недостаточно данных`;
+            } else {
+              Title.textContent = `${new Date().toLocaleString(this.lang, { month: 'long' })}`;
+              const pieGraphBlock = document.createElement('div');
+              pieGraphBlock.classList.add('analytics__pie-graph'); const pieGraph = document.createElement('canvas');
+              pieGraphBlock.appendChild(pieGraph)
+              this.pieBlock = pieGraph;
+              analyticsBlock.append(...[Title, pieGraphBlock]);
+              const lineTitle = document.createElement('div');
+              lineTitle.classList.add('analytics__title');
+              const lineGraphLanguage = this.lang === 'en' ? `Last Month in`: `Последний месяц в`;
+              lineTitle.textContent = `${lineGraphLanguage} ${this.user.settings.currency}`;
+              const lineGraphBlock = document.createElement('div');
+              lineGraphBlock.classList.add('analytics__line-graph');
+              const lineGraph = document.createElement('canvas');
+              lineGraphBlock.appendChild(lineGraph)
+              this.lineBlock = lineGraph;
+              this.generateExpense(analyticsBlock);
+              analyticsBlock.append(...[lineTitle, lineGraphBlock]);
+            }
             this.appBlock.append(analyticsBlock);
-            this.generateExpense(analyticsBlock);
-            analyticsBlock.append(...[lineTitle, lineGraphBlock]);
           })
             .catch((error) => console.error(error));
         })
