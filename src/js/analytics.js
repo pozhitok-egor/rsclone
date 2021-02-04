@@ -39,6 +39,10 @@ export default class Analytics {
             while (this.appBlock.firstChild) {
               this.appBlock.removeChild(this.appBlock.firstChild);
             }
+            this.transactions = this.transactions.filter(value =>
+              // eslint-disable-next-line no-underscore-dangle
+              this.accounts.find(acc => acc._id === value.accountId).currency === this.user.settings.currency
+            );
             const analyticsBlock = document.createElement('div');
             analyticsBlock.classList.add('analytics');
             const Title = document.createElement('div');
