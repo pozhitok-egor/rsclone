@@ -399,7 +399,7 @@ body {
   }
 
   &__days {
-    opacity: 0;
+    display: none;
     transition: 0.2s;
   }
 
@@ -676,6 +676,10 @@ body {
   &__percent {
     color: $white;
   }
+}
+
+.actives-days {
+  display: flex;
 }
 
 .active {

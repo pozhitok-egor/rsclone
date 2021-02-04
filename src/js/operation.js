@@ -420,9 +420,9 @@ class Operation {
 
                                 if (type) {
                                     if (x === 1) {
-                                        repeatDays.classList.add('active');
-                                    } else if (repeatDays.classList.contains('active')) {
-                                        repeatDays.classList.remove('active');
+                                        repeatDays.classList.add('actives-days');
+                                    } else if (repeatDays.classList.contains('actives-days')) {
+                                        repeatDays.classList.remove('actives-days');
                                         repeatDays.childNodes.forEach(value1 => {
                                             if (value1.classList.contains('chosen') === true) {
                                                 value1.classList.remove('chosen');
