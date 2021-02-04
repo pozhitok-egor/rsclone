@@ -50,6 +50,10 @@ body {
   display: flex;
 }
 
+html body.swal2-height-auto {
+  height: 100% !important;
+}
+
 .menu {
   display: flex;
   flex-direction: column;
