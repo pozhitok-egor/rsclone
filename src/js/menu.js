@@ -54,6 +54,15 @@ class Menu {
         this.appBlock.childNodes[0].childNodes[0].src = `${this.icons[0][1]}`;
         this.appBlock.childNodes[0].classList.add('clicked');
         this.appBlock.childNodes[3].classList.add('menu__hidden');
+
+        if (document.querySelector('.footer').classList.contains('actives')) {
+            document.querySelector('.footer').classList.remove('actives');
+            if (document.querySelector('body').lastElementChild.classList.contains('popup')) {
+                console.log('del')
+                popup.remove();
+            }
+        }
+
         this.appBlock.childNodes[3].onclick = () => {
             if (document.querySelector('.footer').classList.contains('actives')) {
                 document.querySelector('.footer').classList.remove('actives');

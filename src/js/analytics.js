@@ -1,5 +1,6 @@
 import axios from "axios";
 import Chart from 'chart.js';
+import Swal from "sweetalert2";
 
 function getRandomColor() {
   const letters = '0123456789ABCDEF';
@@ -26,58 +27,74 @@ export default class Analytics {
     axios.get(`https://croesus-backend.herokuapp.com/transactions/all`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
-      .then((transaction) => {
-        axios.get(`https://croesus-backend.herokuapp.com/accounts/all`, {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        }).then((account) => {
-          axios.get(`https://croesus-backend.herokuapp.com/users`, {
+        .then((transaction) => {
+          axios.get(`https://croesus-backend.herokuapp.com/accounts/all`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-          }).then((user) => {
-            this.transactions = transaction.data.transactions;
-            this.accounts = account.data.accounts;
-            this.user = user.data.user;
-            while (this.appBlock.firstChild) {
-              this.appBlock.removeChild(this.appBlock.firstChild);
-            }
-            this.transactions = this.transactions.filter(value =>
-              // eslint-disable-next-line no-underscore-dangle
-              this.accounts.find(acc => acc._id === value.accountId).currency === this.user.settings.currency
-            );
-            const analyticsBlock = document.createElement('div');
-            analyticsBlock.classList.add('analytics');
-            const Title = document.createElement('div');
-            Title.classList.add('analytics__title');
-            if (this.transactions.length < 3) {
-              analyticsBlock.append(Title)
-              Title.textContent = this.lang === 'en' ? `Not enough data` : `Недостаточно данных`;
-            } else {
-              Title.textContent = `${new Date().toLocaleString(this.lang, { month: 'long' })}`;
-              const pieGraphBlock = document.createElement('div');
-              pieGraphBlock.classList.add('analytics__pie-graph'); const pieGraph = document.createElement('canvas');
-              pieGraphBlock.appendChild(pieGraph)
-              this.pieBlock = pieGraph;
-              analyticsBlock.append(...[Title, pieGraphBlock]);
-              const lineTitle = document.createElement('div');
-              lineTitle.classList.add('analytics__title');
-              const lineGraphLanguage = this.lang === 'en' ? `Last Month in`: `Последний месяц в`;
-              lineTitle.textContent = `${lineGraphLanguage} ${this.user.settings.currency}`;
-              const lineGraphBlock = document.createElement('div');
-              lineGraphBlock.classList.add('analytics__line-graph');
-              const lineGraph = document.createElement('canvas');
-              lineGraphBlock.appendChild(lineGraph)
-              this.lineBlock = lineGraph;
-              this.generateExpense(analyticsBlock);
-              analyticsBlock.append(...[lineTitle, lineGraphBlock]);
-            }
-            this.appBlock.append(analyticsBlock);
+          }).then((account) => {
+            axios.get(`https://croesus-backend.herokuapp.com/users`, {
+              headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            }).then((user) => {
+              this.transactions = transaction.data.transactions;
+              this.accounts = account.data.accounts;
+              this.user = user.data.user;
+              while (this.appBlock.firstChild) {
+                this.appBlock.removeChild(this.appBlock.firstChild);
+              }
+              this.transactions = this.transactions.filter(value =>
+                  // eslint-disable-next-line no-underscore-dangle
+                  this.accounts.find(acc => acc._id === value.accountId).currency === this.user.settings.currency
+              );
+              const analyticsBlock = document.createElement('div');
+              analyticsBlock.classList.add('analytics');
+              const Title = document.createElement('div');
+              Title.classList.add('analytics__title');
+              if (this.transactions.length < 3) {
+                analyticsBlock.append(Title)
+                Title.textContent = this.lang === 'en' ? `Not enough data` : `Недостаточно данных`;
+              } else {
+                Title.textContent = `${new Date().toLocaleString(this.lang, { month: 'long' })}`;
+                const pieGraphBlock = document.createElement('div');
+                pieGraphBlock.classList.add('analytics__pie-graph'); const pieGraph = document.createElement('canvas');
+                pieGraphBlock.appendChild(pieGraph)
+                this.pieBlock = pieGraph;
+                analyticsBlock.append(...[Title, pieGraphBlock]);
+                const lineTitle = document.createElement('div');
+                lineTitle.classList.add('analytics__title');
+                const lineGraphLanguage = this.lang === 'en' ? `Last Month in`: `Последний месяц в`;
+                lineTitle.textContent = `${lineGraphLanguage} ${this.user.settings.currency}`;
+                const lineGraphBlock = document.createElement('div');
+                lineGraphBlock.classList.add('analytics__line-graph');
+                const lineGraph = document.createElement('canvas');
+                lineGraphBlock.appendChild(lineGraph)
+                this.lineBlock = lineGraph;
+                this.generateExpense(analyticsBlock);
+                analyticsBlock.append(...[lineTitle, lineGraphBlock]);
+              }
+              this.appBlock.append(analyticsBlock);
+            })
+                .catch((error) => {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `${error.response.data.message}`
+                  })
+                });
           })
-            .catch((error) => console.error(error));
+              .catch((error) => {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: `${error.response.data.message}`
+                })
+              });
         })
-          .catch((error) => console.error(error));
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+        .catch((error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `${error.response.data.message}`
+          })
+        });
   }
 
   renderChart(income, expenses, userText, date, currency) {
@@ -91,33 +108,33 @@ export default class Analytics {
             label: 'income',
             data: income,
             backgroundColor:
-              'rgba(51, 236, 158, 0.2)'
+                'rgba(51, 236, 158, 0.2)'
             ,
             borderColor:
-              'rgba(51, 236, 158, 1)'
+                'rgba(51, 236, 158, 1)'
             ,
             borderWidth: 1,
             pointBorderColor:
-              'rgba(51, 236, 158, 1)'
+                'rgba(51, 236, 158, 1)'
             ,
             pointBackgroundColor:
-              'rgba(51, 236, 158, 1)'
+                'rgba(51, 236, 158, 1)'
           },
           {
             label: 'expenses',
             data: expenses,
             backgroundColor:
-              'rgba(236, 51, 107, 0.2)'
+                'rgba(236, 51, 107, 0.2)'
             ,
             borderColor:
-              'rgba(236, 51, 107, 1)'
+                'rgba(236, 51, 107, 1)'
             ,
             borderWidth: 1,
             pointBorderColor:
-              'rgba(236, 51, 107, 1)'
+                'rgba(236, 51, 107, 1)'
             ,
             pointBackgroundColor:
-              'rgba(236, 51, 107, 1)'
+                'rgba(236, 51, 107, 1)'
           }
         ]
       },
@@ -195,45 +212,45 @@ export default class Analytics {
     let totalSum = 0;
 
     this.transactions.filter(transaction =>
-      transaction.income === false && new Date(transaction.createdAt).getMonth() === curMonth && curYear === new Date(transaction.createdAt).getFullYear()
+        transaction.income === false && new Date(transaction.createdAt).getMonth() === curMonth && curYear === new Date(transaction.createdAt).getFullYear()
     )
-      .forEach(value => {
-        // eslint-disable-next-line no-underscore-dangle
-        const account = this.accounts.find(acc => acc._id === value.accountId);
-        if (account && account.currency === this.user.settings.currency) {
-          if (names.indexOf(value.type) === -1) {
-            names.push(value.type);
-            values.push(value.sum);
-            colors.push(getRandomColor());
-          } else {
-            values[names.indexOf(value.type)] = values[names.indexOf(value.type)] + value.sum;
-          };
-          totalSum += value.sum;
-        }
-      });
+        .forEach(value => {
+          // eslint-disable-next-line no-underscore-dangle
+          const account = this.accounts.find(acc => acc._id === value.accountId);
+          if (account && account.currency === this.user.settings.currency) {
+            if (names.indexOf(value.type) === -1) {
+              names.push(value.type);
+              values.push(value.sum);
+              colors.push(getRandomColor());
+            } else {
+              values[names.indexOf(value.type)] = values[names.indexOf(value.type)] + value.sum;
+            };
+            totalSum += value.sum;
+          }
+        });
 
     const expenses = [];
     const dates = [];
     const income = [];
 
     this.transactions.filter(transaction =>
-      new Date(transaction.createdAt) > curDate.getDate() - 30
+        new Date(transaction.createdAt) > curDate.getDate() - 30
     )
-      .forEach(value => {
-        // eslint-disable-next-line no-underscore-dangle
-        const account = this.accounts.find(acc => acc._id === value.accountId);
-        if (account && account.currency === this.user.settings.currency) {
-          if (dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0]) === -1) {
-            dates.push(new Date(value.createdAt).toLocaleString().split(',')[0]);
-            expenses.push(value.income ? 0 : 0 - value.sum)
-            income.push(value.income ? value.sum : 0)
-          } else if (value.income) {
-            income[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] = income[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] + value.sum;
-          } else {
-            expenses[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] = expenses[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] - value.sum;
+        .forEach(value => {
+          // eslint-disable-next-line no-underscore-dangle
+          const account = this.accounts.find(acc => acc._id === value.accountId);
+          if (account && account.currency === this.user.settings.currency) {
+            if (dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0]) === -1) {
+              dates.push(new Date(value.createdAt).toLocaleString().split(',')[0]);
+              expenses.push(value.income ? 0 : 0 - value.sum)
+              income.push(value.income ? value.sum : 0)
+            } else if (value.income) {
+              income[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] = income[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] + value.sum;
+            } else {
+              expenses[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] = expenses[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] - value.sum;
+            }
           }
-        }
-      });
+        });
 
 
     this.renderPie(names, values.map(value => Math.round(value / totalSum * 100)), colors);

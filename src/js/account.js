@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 import loading from "./loading";
 
 class Account {
@@ -269,7 +270,12 @@ class Account {
                         loading(document.querySelector('body'), false);
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: `${error.response.data.message}`
+                        })
+                        loading(document.querySelector('body'), false);
                     })
             }
 
@@ -278,7 +284,11 @@ class Account {
 
         save.onclick = () => {
             if (titleInput.value.trim() === '') {
-                alert('ПИШИ НАЗВАНИЕ!');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Введите название!'
+                })
             } else {
                 if (currencyBalanceInput.value.trim() === '') {
                     currencyBalanceInput.value = '0';
@@ -301,7 +311,12 @@ class Account {
                             loading(document.querySelector('body'), false);
                         })
                         .catch(function (error) {
-                            console.log(error);
+                            loading(document.querySelector('body'), false);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: `${error.response.data.message}`
+                            })
                         })
                 } else {
                     axios.post(`https://croesus-backend.herokuapp.com/accounts/`, {
@@ -319,7 +334,12 @@ class Account {
                             loading(document.querySelector('body'), false);
                         })
                         .catch(function (error) {
-                            console.log(error);
+                            loading(document.querySelector('body'), false);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: `${error.response.data.message}`
+                            })
                         })
                 }
 
@@ -397,11 +417,21 @@ class Account {
                         loading(document.querySelector('body'), false);
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        loading(document.querySelector('body'), false);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: `${error.response.data.message}`
+                        })
                     })
             })
             .catch(function (error) {
-                console.log(error);
+                loading(document.querySelector('body'), false);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `${error.response.data.message}`
+                })
             })
     }
 }

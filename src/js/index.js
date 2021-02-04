@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 import '../scss/style.scss';
 
 import Menu from "./menu";
@@ -15,7 +16,7 @@ const footer = new Footer(document.querySelector(".footer"));
 if (localStorage.getItem('lang') === null) {
     localStorage.setItem('lang', 'en');
 }
-// menu.addMenuItems();
+menu.addMenuItems();
 login.autorization();
 footer.generateTitle();
 if(localStorage.getItem('token')) {
@@ -33,6 +34,11 @@ if(localStorage.getItem('token')) {
             loading(document.querySelector('body'), false);
         })
         .catch(function (error) {
-            console.log(error);
+            loading(document.querySelector('body'), false);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `${error.response.data.message}`
+            })
         })
 }

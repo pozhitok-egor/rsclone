@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as Swal from "sweetalert2";
 import Account from './account'
 import loading from "./loading";
 import Menu from "./menu";
@@ -50,8 +51,8 @@ class Login {
         ];
         this.languageType = ['Русский', 'English'];
         this.lenguageSend = [['Русский', 'ru'], ['English', 'en']];
-        this.rusLang = [['Регистрация', 'Имя Пользователя', 'Пароль', 'Язык', 'Валюта', 'Зарегестрироваться'], ['Авторизация', 'Имя Пользователя', 'Пароль', 'авторизоваться']];
-        this.engLang = [['Register', 'UserName', 'Password', 'Language', 'Currency', 'Register'], ['Login', 'UserName', 'Password', 'Login']];
+        this.rusLang = [['Регистрация', 'Имя Пользователя', 'Пароль', 'Повторите Пароль','Язык', 'Валюта', 'Зарегестрироваться'], ['Авторизация', 'Имя Пользователя', 'Пароль', 'авторизоваться']];
+        this.engLang = [['Register', 'UserName', 'Password', 'Repit Password', 'Language', 'Currency', 'Register'], ['Login', 'UserName', 'Password', 'Login']];
     }
 
     autorization() {
@@ -95,6 +96,7 @@ class Login {
                         headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
                     })
                         .then(function (responses) {
+                            console.log(responses)
                             localStorage.setItem('lang', `${responses.data.user.settings.language}`);
                             account.generateTitle();
                             menu.addMenuItems();
@@ -102,11 +104,21 @@ class Login {
                             loading(document.querySelector('body'), false);
                         })
                         .catch(function (error) {
-                            console.log(error);
+                            loading(document.querySelector('body'), false);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: `${error.response.data.message}`
+                            })
                         })
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    loading(document.querySelector('body'), false);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `${error.response.data.message}`
+                    })
                 });
 
         }
@@ -135,6 +147,15 @@ class Login {
             }
         })
         block.append(form);
+
+        menu.addMenuItems();
+        for (let x = 0; x < 3; x += 1) {
+            document.querySelector('.menu').childNodes[0].remove();
+        }
+
+        if (document.querySelector('body').lastElementChild.classList.contains('popup')) {
+            document.querySelector('body').lastElementChild.remove();
+        }
     }
 
     registration() {
@@ -267,9 +288,17 @@ class Login {
         autorButton.type = 'button';
         autorButton.onclick = () => {
             if (autorInput.value === '' || autorPass.value === '' || autorPassRepit.value === '') {
-                alert('Не всё заполнено!')
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Не всё заполнено!'
+                })
             } else if (autorPass.value !== autorPassRepit.value) {
-                alert('WRONG!!');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Пароли не совпадают!'
+                })
             } else {
                 let lang;
                 this.lenguageSend.forEach(value => {
@@ -297,11 +326,21 @@ class Login {
                                 loading(document.querySelector('body'), false);
                             })
                             .catch(function (error) {
-                                console.log(error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: `${error.response.data.message}`
+                                })
+                                loading(document.querySelector('body'), false);
                             })
                     })
-                    .catch(function (error) {
-                        console.log(error);
+                    .catch((error) => {
+                        loading(document.querySelector('body'), false);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: `${error.response.data.message}`
+                        })
                     });
             }
         }
@@ -350,6 +389,15 @@ class Login {
         })
 
         block.append(form);
+
+        menu.addMenuItems();
+        for (let x = 0; x < 3; x += 1) {
+            document.querySelector('.menu').childNodes[0].remove();
+        }
+
+        if (document.querySelector('body').lastElementChild.classList.contains('popup')) {
+            document.querySelector('body').lastElementChild.remove();
+        }
     }
 }
 

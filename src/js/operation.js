@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 import loading from "./loading";
 
 class Operation {
@@ -148,7 +149,12 @@ class Operation {
                                         }
                                     })
                                     .catch(function (error) {
-                                        console.log(error);
+                                        loading(document.querySelector('body'), false);
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Oops...',
+                                            text: `${error.response.data.message}`
+                                        })
                                     })
                             })
                             dayBlock.append(blockTitle, operationBlock);
@@ -176,9 +182,7 @@ class Operation {
                         const options = (buttonBlock, buttonAdd, buttonMinus, type) => {
                             const blocks = buttonBlock;
                             const adds = buttonAdd;
-                            // adds.classList.add('slide-down');
                             const minus = buttonMinus;
-                            // minus.classList.add('slide-down');
 
                             if (type === 'list') {
                                 blocks.classList.add('action__clicked');
@@ -227,11 +231,21 @@ class Operation {
                         loading(document.querySelector('body'), false);
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        loading(document.querySelector('body'), false);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: `${error.response.data.message}`
+                        })
                     })
             })
             .catch(function (error) {
-                console.log(error);
+                loading(document.querySelector('body'), false);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `${error.response.data.message}`
+                })
             })
     }
 
@@ -431,19 +445,13 @@ class Operation {
                                     }
                                     day.classList.add('chosen');
                                 } else if (type === false) {
-                                    if (blockItem.classList.contains('active')) {
+                                    if (blockItem.classList.contains('actives-days')) {
                                     day.classList.add('chosen');
                                 }
                             }
                         })
                         }
                     }
-
-                    // if (type) {
-                    //     blockItem.childNodes.forEach((value, index) => {
-                    //
-                    //     })
-                    // }
                 }
 
                 const repeatBlock = document.createElement('div');
@@ -531,7 +539,11 @@ class Operation {
                                 this.generateTitle();
                             })
                             .catch(function (error) {
-                                console.log(error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: `${error.response.data.message}`
+                                })
                             })
                     }
 
@@ -551,7 +563,11 @@ class Operation {
                     if (Number.isInteger(+amountInput.value)) {
                         suma = amountInput.value;
                     } else {
-                        alert('Нужно число!')
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Нужно ввести числовое значение!'
+                        })
                     }
 
 
@@ -617,9 +633,17 @@ class Operation {
                         days = ['', ''];
                     }
                     if (suma === '' || types === undefined) {
-                        alert('НЕ заполнено!!!!')
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Не всё заполнено!'
+                        })
                     } else if ((flag.checked && delays === undefined) || (flag.checked && days === undefined)) {
-                        alert('Выберите повторы!!!!')
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Выберите повторы!'
+                        })
                     } else if (deletes) {
                         loading(document.querySelector('body'));
                         axios.put(`https://croesus-backend.herokuapp.com/transactions/${idOperation}`, {
@@ -638,10 +662,15 @@ class Operation {
                                 loading(document.querySelector('body'), false);
                             })
                             .catch(function (error) {
-                                console.log(error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: `${error.response.data.message}`
+                                })
                             })
                     } else {
                         loading(document.querySelector('body'));
+                        console.log(this.operationType)
                         axios.post(`https://croesus-backend.herokuapp.com/transactions/`, {
                                 accountId: `${this.accountsID}`,
                                 type: types,
@@ -659,14 +688,24 @@ class Operation {
                                 loading(document.querySelector('body'), false);
                             })
                             .catch(function (error) {
-                                console.log(error);
+                                loading(document.querySelector('body'), false);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: `${error.response.data.message}`
+                                })
                             })
                     }
                 }
                 loading(document.querySelector('body'), false);
             })
             .catch(function (error) {
-                console.log(error);
+                loading(document.querySelector('body'), false);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `${error.response.data.message}`
+                })
             })
     }
 }

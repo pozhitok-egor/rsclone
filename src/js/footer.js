@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 /* eslint-disable */
 import Login from "./authorization";
 /* eslint-enable */
@@ -110,11 +111,21 @@ class Footer {
                                 })
                             })
                             .catch(function (error) {
-                                console.log(error);
+                                loading(document.querySelector('body'), false);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: `${error.response.data.message}`
+                                })
                             })
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        loading(document.querySelector('body'), false);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: `${error.response.data.message}`
+                        })
                     })
             }
             select.append(option);
@@ -167,7 +178,6 @@ class Footer {
             signOut.onclick = () => {
                 localStorage.removeItem('token');
                 login.autorization();
-                document.querySelector('.menu').textContent = '';
                 this.generateTitle();
             }
             console.log(response.data.user.username)
@@ -176,13 +186,11 @@ class Footer {
             signIn.onclick = () => {
                 localStorage.removeItem('token');
                 login.autorization();
-                document.querySelector('.menu').textContent = '';
                 this.generateTitle();
             }
             signUp.onclick = () => {
                 localStorage.removeItem('token');
                 login.registration();
-                document.querySelector('.menu').textContent = '';
                 this.generateTitle();
             }
             signBlock.append(signIn, signUp);
