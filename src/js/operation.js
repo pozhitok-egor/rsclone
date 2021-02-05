@@ -150,7 +150,7 @@ class Operation {
                                             }
                                         }
                                     })
-                                    .catch(function (error) {
+                                    .catch((error) => {
                                         loading(document.querySelector('body'), false);
                                         Swal.fire({
                                             icon: 'error',
@@ -232,7 +232,7 @@ class Operation {
                         block.append(buttonContainer);
                         loading(document.querySelector('body'), false);
                     })
-                    .catch(function (error) {
+                    .catch((error) => {
                         loading(document.querySelector('body'), false);
                         Swal.fire({
                             icon: 'error',
@@ -241,7 +241,7 @@ class Operation {
                         })
                     })
             })
-            .catch(function (error) {
+            .catch((error) => {
                 loading(document.querySelector('body'), false);
                 Swal.fire({
                     icon: 'error',
@@ -540,7 +540,7 @@ class Operation {
                             .then(() => {
                                 this.generateTitle();
                             })
-                            .catch(function (error) {
+                            .catch((error) => {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
@@ -663,7 +663,7 @@ class Operation {
                                 this.generateTitle();
                                 loading(document.querySelector('body'), false);
                             })
-                            .catch(function (error) {
+                            .catch((error) => {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
@@ -688,7 +688,7 @@ class Operation {
                                 this.generateTitle();
                                 loading(document.querySelector('body'), false);
                             })
-                            .catch(function (error) {
+                            .catch((error) => {
                                 loading(document.querySelector('body'), false);
                                 Swal.fire({
                                     icon: 'error',
@@ -700,7 +700,7 @@ class Operation {
                 }
                 loading(document.querySelector('body'), false);
             })
-            .catch(function (error) {
+            .catch((error) => {
                 loading(document.querySelector('body'), false);
                 Swal.fire({
                     icon: 'error',
