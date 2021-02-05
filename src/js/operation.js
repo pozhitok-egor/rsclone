@@ -81,7 +81,9 @@ class Operation {
                         imgSearch.alt = '';
                         header.append(sum, imgSearch);
                         block.append(header);
-
+                        const daysBlock = document.createElement('div');
+                        daysBlock.classList.add('action__transactions');
+                        block.append(daysBlock);
                         sort.forEach(value => {
                             const dayBlock = document.createElement('div');
                             dayBlock.classList.add('action__day-block');
@@ -159,7 +161,7 @@ class Operation {
                             })
                             dayBlock.append(blockTitle, operationBlock);
 
-                            block.append(dayBlock);
+                            daysBlock.append(dayBlock);
                         })
                         const buttonContainer = document.createElement('div');
                         buttonContainer.classList.add('action__add-list');

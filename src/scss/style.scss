@@ -84,7 +84,6 @@ html body.swal2-height-auto {
   width: 95%;
   height: 100%;
   padding: 10px 20px;
-  overflow: auto;
   position: relative;
 
   &__form, &__account-title {
@@ -422,6 +421,33 @@ html body.swal2-height-auto {
     font-size: 16px;
     cursor: pointer;
     user-select: none;
+  }
+
+  &__transactions {
+    overflow: auto;
+    height: 95%;
+    padding-bottom: 80px;
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: #080F58;
+      border-radius: 50px;
+      margin-bottom: 60px;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: #ec336b;
+      border-radius: 50px;
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: #d32d5f;
+    }
   }
 
   &__day-block {
