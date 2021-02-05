@@ -84,7 +84,7 @@ html body.swal2-height-auto {
   width: 95%;
   height: 100%;
   padding: 10px 20px;
-  overflow: overlay;
+  overflow: auto;
   position: relative;
 
   &__form, &__account-title {
@@ -335,7 +335,7 @@ html body.swal2-height-auto {
     top: 40px;
     border: 1px solid #080F58;
     z-index: 10;
-    overflow: overlay;
+    overflow: auto;
     max-height: 165px;
     justify-content: flex-start;
   }
