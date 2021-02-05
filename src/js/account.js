@@ -225,6 +225,7 @@ class Account {
         question.classList.add('action__title-account');
         const flag = document.createElement('input');
         flag.type = 'checkbox';
+        flag.checked = true;
         questionBlock.append(question, flag);
 
         this.lenguageSend.forEach(value => {
