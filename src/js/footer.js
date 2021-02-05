@@ -360,8 +360,12 @@ class Footer {
                 }
             }
         })
-        this.appBlock.append(title, account, settings, autor, course);
 
+        if (typeOperation) {
+            this.appBlock.append(title, account, settings, autor, course);
+        } else {
+            this.appBlock.append(title, account, autor, course);
+        }
     }
 }
 
