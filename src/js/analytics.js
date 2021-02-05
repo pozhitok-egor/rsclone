@@ -20,6 +20,7 @@ export default class Analytics {
     this.lineBlock = null;
     this.line = null;
     this.accounts = [];
+    this.currency = {};
     this.lang = localStorage.getItem('lang');
   }
 
@@ -40,45 +41,52 @@ export default class Analytics {
               while (this.appBlock.firstChild) {
                 this.appBlock.removeChild(this.appBlock.firstChild);
               }
-              this.transactions = this.transactions.filter(value =>
-                  // eslint-disable-next-line no-underscore-dangle
-                  this.accounts.find(acc => acc._id === value.accountId).currency === this.user.settings.currency
-              );
-              const analyticsBlock = document.createElement('div');
-              analyticsBlock.classList.add('analytics');
-              const Title = document.createElement('div');
-              Title.classList.add('analytics__title');
-              if (this.transactions.length < 3) {
-                analyticsBlock.append(Title)
-                Title.textContent = this.lang === 'en' ? `Not enough data` : `Недостаточно данных`;
-              } else {
-                Title.textContent = `${new Date().toLocaleString(this.lang, { month: 'long' })}`;
-                const pieGraphBlock = document.createElement('div');
-                pieGraphBlock.classList.add('analytics__pie-graph'); const pieGraph = document.createElement('canvas');
-                pieGraphBlock.appendChild(pieGraph)
-                this.pieBlock = pieGraph;
-                analyticsBlock.append(...[Title, pieGraphBlock]);
-                const lineTitle = document.createElement('div');
-                lineTitle.classList.add('analytics__title');
-                const lineGraphLanguage = this.lang === 'en' ? `Last Month in`: `Последний месяц в`;
-                lineTitle.textContent = `${lineGraphLanguage} ${this.user.settings.currency}`;
-                const lineGraphBlock = document.createElement('div');
-                lineGraphBlock.classList.add('analytics__line-graph');
-                const lineGraph = document.createElement('canvas');
-                lineGraphBlock.appendChild(lineGraph)
-                this.lineBlock = lineGraph;
-                this.generateExpense(analyticsBlock);
-                analyticsBlock.append(...[lineTitle, lineGraphBlock]);
-              }
-              this.appBlock.append(analyticsBlock);
+              axios.get(`https://api.exchangeratesapi.io/latest?base=${this.user.settings.currency}`)
+              .then(data => {
+                this.currency = data.data.rates;
+                const analyticsBlock = document.createElement('div');
+                analyticsBlock.classList.add('analytics');
+                const Title = document.createElement('div');
+                Title.classList.add('analytics__title');
+                if (this.transactions.length < 3) {
+                  analyticsBlock.append(Title)
+                  Title.textContent = this.lang === 'en' ? `Not enough data` : `Недостаточно данных`;
+                } else {
+                  Title.textContent = `${new Date().toLocaleString(this.lang, { month: 'long' })}`;
+                  const pieGraphBlock = document.createElement('div');
+                  pieGraphBlock.classList.add('analytics__pie-graph'); const pieGraph = document.createElement('canvas');
+                  pieGraphBlock.appendChild(pieGraph)
+                  this.pieBlock = pieGraph;
+                  analyticsBlock.append(...[Title, pieGraphBlock]);
+                  const lineTitle = document.createElement('div');
+                  lineTitle.classList.add('analytics__title');
+                  const lineGraphLanguage = this.lang === 'en' ? `Last Month in`: `Последний месяц в`;
+                  lineTitle.textContent = `${lineGraphLanguage} ${this.user.settings.currency}`;
+                  const lineGraphBlock = document.createElement('div');
+                  lineGraphBlock.classList.add('analytics__line-graph');
+                  const lineGraph = document.createElement('canvas');
+                  lineGraphBlock.appendChild(lineGraph)
+                  this.lineBlock = lineGraph;
+                  this.generateExpense(analyticsBlock);
+                  analyticsBlock.append(...[lineTitle, lineGraphBlock]);
+                }
+                this.appBlock.append(analyticsBlock);
+              })
+              .catch(error => {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'App error',
+                  text: `${error.message}`
+                })
+              })
             })
-                .catch((error) => {
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: `${error.response.data.message}`
-                  })
-                });
+            .catch((error) => {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `${error.response.data.message}`
+              })
+            });
           })
               .catch((error) => {
                 Swal.fire({
@@ -118,7 +126,9 @@ export default class Analytics {
                 'rgba(51, 236, 158, 1)'
             ,
             pointBackgroundColor:
-                'rgba(51, 236, 158, 1)'
+                'rgba(51, 236, 158, 1)',
+            fill: true,
+            lineTension: 0
           },
           {
             label: 'expenses',
@@ -134,11 +144,14 @@ export default class Analytics {
                 'rgba(236, 51, 107, 1)'
             ,
             pointBackgroundColor:
-                'rgba(236, 51, 107, 1)'
+                'rgba(236, 51, 107, 1)',
+            fill: true,
+            lineTension: 0
           }
         ]
       },
       options: {
+
         responsive: true,
         maintainAspectRatio: false,
         title: {
@@ -211,23 +224,33 @@ export default class Analytics {
     const colors = [];
     let totalSum = 0;
 
+    this.accounts.forEach(account => {
+      if (account.currency !== this.user.settings.currency) {
+        const currency = this.currency[account.currency] ? this.currency[account.currency] : 1;
+        this.transactions.filter(transaction => {
+          // eslint-disable-next-line no-underscore-dangle
+          return transaction.accountId === account._id
+        })
+        .forEach((transaction) => {
+          // eslint-disable-next-line no-param-reassign
+          transaction.sum = Number((transaction.sum/currency).toFixed(2));
+        })
+      }
+    })
+
     this.transactions.filter(transaction =>
         transaction.income === false && new Date(transaction.createdAt).getMonth() === curMonth && curYear === new Date(transaction.createdAt).getFullYear()
     )
-        .forEach(value => {
-          // eslint-disable-next-line no-underscore-dangle
-          const account = this.accounts.find(acc => acc._id === value.accountId);
-          if (account && account.currency === this.user.settings.currency) {
-            if (names.indexOf(value.type) === -1) {
-              names.push(value.type);
-              values.push(value.sum);
-              colors.push(getRandomColor());
-            } else {
-              values[names.indexOf(value.type)] = values[names.indexOf(value.type)] + value.sum;
-            };
-            totalSum += value.sum;
-          }
-        });
+    .forEach(value => {
+        if (names.indexOf(value.type) === -1) {
+          names.push(value.type);
+          values.push(value.sum);
+          colors.push(getRandomColor());
+        } else {
+          values[names.indexOf(value.type)] += value.sum;
+        };
+        totalSum += value.sum;
+    });
 
     const expenses = [];
     const dates = [];
@@ -236,21 +259,17 @@ export default class Analytics {
     this.transactions.filter(transaction =>
         new Date(transaction.createdAt) > curDate.getDate() - 30
     )
-        .forEach(value => {
-          // eslint-disable-next-line no-underscore-dangle
-          const account = this.accounts.find(acc => acc._id === value.accountId);
-          if (account && account.currency === this.user.settings.currency) {
-            if (dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0]) === -1) {
-              dates.push(new Date(value.createdAt).toLocaleString().split(',')[0]);
-              expenses.push(value.income ? 0 : 0 - value.sum)
-              income.push(value.income ? value.sum : 0)
-            } else if (value.income) {
-              income[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] = income[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] + value.sum;
-            } else {
-              expenses[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] = expenses[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] - value.sum;
-            }
-          }
-        });
+    .forEach(value => {
+        if (dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0]) === -1) {
+          dates.push(new Date(value.createdAt).toLocaleString().split(',')[0]);
+          expenses.push(value.income ? 0 : 0 - value.sum)
+          income.push(value.income ? value.sum : 0)
+        } else if (value.income) {
+          income[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] = income[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] + value.sum;
+        } else {
+          expenses[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] = expenses[dates.indexOf(new Date(value.createdAt).toLocaleString().split(',')[0])] - value.sum;
+        }
+    });
 
 
     this.renderPie(names, values.map(value => Math.round(value / totalSum * 100)), colors);
