@@ -651,7 +651,7 @@ class Operation {
                                 type: types,
                                 repeat: flag.checked,
                                 delay: delays,
-                                day: days[1],
+                                day: +days[1],
                                 sum: +suma
                             },
                             {
@@ -670,13 +670,12 @@ class Operation {
                             })
                     } else {
                         loading(document.querySelector('body'));
-                        console.log(this.operationType)
                         axios.post(`https://croesus-backend.herokuapp.com/transactions/`, {
                                 accountId: `${this.accountsID}`,
                                 type: types,
                                 repeat: flag.checked,
                                 delay: delays,
-                                day: days[1],
+                                day: +days[1],
                                 sum: +suma,
                                 income: this.operationType
                             },
