@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>reveal.js</title>
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/black.css" id="theme">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <section>
+            <h2>Croesus</h2>
+          </section>
+          <section>
+            <h3>Registration</h3>
+            <img src="./img/registration.png" height="600" alt="">
+          </section>
+          <section>
+            <h3>Login</h3>
+            <img src="./img/login.png" height="600" alt="">
+          </section>
+          <section>
+            <h3>Accounts</h3>
+            <img src="./img/accounts.png" height="600" alt="">
+          </section>
+          <section>
+            <img src="./img/account_create.png" height="600" alt="">
+          </section>
+          <section>
+            <h3>Transactions</h3>
+            <img src="./img/transactions.png" height="600" alt="">
+          </section>
+          <section>
+            <img src="./img/transaction_add_expense.png" height="600" alt="">
+          </section>
+          <section>
+            <img src="./img/transaction_add_income.png" height="600" alt="">
+          </section>
+          <section>
+            <h3>Analytics</h3>
+            <img src="./img/analytics.png" height="600" alt="">
+          </section>
+          <section>
+            <h3>Settings</h3>
+            <img src="./img/settings.png" alt="">
+          </section>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## RACI матрица
+            | ***RACI***         | ***Лица*** |      |
+            |--------------|:----:|:----:|
+            | Операция     | Егор | Ваня |
+            | Дизайн       |   R  |   C  |
+            | BackEnd      |   R  |   A  |
+            | FrontEnd     |   A  |   R  |
+            | Тестирование |   R  |   R  |
+          </textarea>
+        </section>
+        <section>
+          <section>
+            <h3>Kanban board на основе Trello</h3>
+            <img src="./img/trello.png" height="600" alt="">
+          </section>
+          <section data-markdown>
+            <textarea data-template>
+              ## Основные списки
+              - Запланированные задачи
+              - Задачи, которые необходимо сделать
+              - Задачи в разработке
+              - Задачи с ошибками во время тестов
+              - Тесты во время разработки
+              - Тесты перед публикацией
+              - Готовые задачи
+            </textarea>
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+      });
+    </script>
+  </body>
+</html>
